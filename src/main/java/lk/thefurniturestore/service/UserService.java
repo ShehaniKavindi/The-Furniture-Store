@@ -1,12 +1,15 @@
 package lk.thefurniturestore.service;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.core.Context;
 import lk.thefurniturestore.dto.UserDTO;
 import lk.thefurniturestore.entity.Address;
+import lk.thefurniturestore.entity.City;
+import lk.thefurniturestore.entity.District;
+import lk.thefurniturestore.entity.Province;
 import lk.thefurniturestore.entity.Status;
 import lk.thefurniturestore.entity.User;
 import lk.thefurniturestore.mail.VerificationMail;
@@ -18,10 +21,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Set;
 
 public class UserService {
 
@@ -221,6 +221,288 @@ public class UserService {
         }
         responseObject.addProperty("status",status);
         responseObject.addProperty("message",message);
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
+    public String getUserProfile(HttpServletRequest request) {
+        JsonObject responseObject = new JsonObject();
+        User sessionUser = getSessionUser(request);
+
+        if (sessionUser == null) {
+            responseObject.addProperty("status", false);
+            responseObject.addProperty("message", "Please login to view your profile.");
+            return AppUtil.GSON.toJson(responseObject);
+        }
+
+        Session hibernateSession = HibernateUtil.getSessionFactory().openSession();
+        try {
+            User user = hibernateSession.get(User.class, sessionUser.getId());
+            if (user == null) {
+                responseObject.addProperty("status", false);
+                responseObject.addProperty("message", "User not found. Please login again.");
+            } else {
+                UserDTO userDTO = toUserProfileDTO(hibernateSession, user);
+                responseObject.addProperty("status", true);
+                responseObject.addProperty("message", "Profile loaded successfully.");
+                responseObject.add("data", AppUtil.GSON.toJsonTree(userDTO));
+            }
+        } catch (Exception e) {
+            responseObject.addProperty("status", false);
+            responseObject.addProperty("message", "Failed to load profile details.");
+            e.printStackTrace();
+        } finally {
+            hibernateSession.close();
+        }
+
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
+    public String updateUserProfile(UserDTO userDTO, HttpServletRequest request) {
+        JsonObject responseObject = new JsonObject();
+        User sessionUser = getSessionUser(request);
+        boolean status = false;
+        String message;
+
+        if (sessionUser == null) {
+            message = "Please login to update your profile.";
+        } else if (userDTO == null) {
+            message = "Profile details are required.";
+        } else if (userDTO.getFname() == null || userDTO.getFname().isBlank()) {
+            message = "First name is required!";
+        } else if (userDTO.getLname() == null || userDTO.getLname().isBlank()) {
+            message = "Last name is required!";
+        } else if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
+            message = "Email is required!";
+        } else if (!userDTO.getEmail().matches(Validator.EMAIL_VALIDATION)) {
+            message = "Please enter a valid email!";
+        } else if (userDTO.getLine1() == null || userDTO.getLine1().isBlank()) {
+            message = "Address line 01 is required!";
+        } else if (userDTO.getMobile() == null || userDTO.getMobile().isBlank()) {
+            message = "Contact number is required!";
+        } else if (!userDTO.getMobile().matches(Validator.MOBILE_VALIDATION)) {
+            message = "Please enter a valid contact number!";
+        } else if (userDTO.getProvinceId() <= 0) {
+            message = "Province is required!";
+        } else if (userDTO.getDistrictId() <= 0) {
+            message = "District is required!";
+        } else if (userDTO.getCityId() <= 0) {
+            message = "City is required!";
+        } else if (userDTO.getPostalCode() != null && !userDTO.getPostalCode().isBlank()
+                && !userDTO.getPostalCode().matches(Validator.POSTAL_CODE_VALIDATION)) {
+            message = "Please enter a valid postal code!";
+        } else {
+            Session hibernateSession = HibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = null;
+            try {
+                User duplicateUser = hibernateSession.createQuery(
+                                "FROM User u WHERE u.email = :email AND u.id <> :userId", User.class)
+                        .setParameter("email", userDTO.getEmail())
+                        .setParameter("userId", sessionUser.getId())
+                        .getSingleResultOrNull();
+
+                if (duplicateUser != null) {
+                    message = "This email already exists! Please use another email.";
+                } else {
+                    City city = hibernateSession.createQuery(
+                                    "FROM City c JOIN FETCH c.district d JOIN FETCH d.province WHERE c.id = :cityId AND d.id = :districtId AND d.province.id = :provinceId",
+                                    City.class)
+                            .setParameter("cityId", userDTO.getCityId())
+                            .setParameter("districtId", userDTO.getDistrictId())
+                            .setParameter("provinceId", userDTO.getProvinceId())
+                            .getSingleResultOrNull();
+
+                    if (city == null) {
+                        message = "Please select a valid province, district and city.";
+                        responseObject.addProperty("status", false);
+                        responseObject.addProperty("message", message);
+                        return AppUtil.GSON.toJson(responseObject);
+                    }
+
+                    transaction = hibernateSession.beginTransaction();
+
+                    User user = hibernateSession.get(User.class, sessionUser.getId());
+                    user.setFname(userDTO.getFname().trim());
+                    user.setLname(userDTO.getLname().trim());
+                    user.setEmail(userDTO.getEmail().trim());
+
+                    Address address = getUserAddress(hibernateSession, user.getId());
+                    if (address == null) {
+                        address = new Address();
+                        address.setUser(user);
+                        address.setLine1(userDTO.getLine1().trim());
+                        address.setLine2(clean(userDTO.getLine2()));
+                        address.setPostalCode(clean(userDTO.getPostalCode()));
+                        address.setMobile(userDTO.getMobile().trim());
+                        address.setCity(city);
+                        hibernateSession.persist(address);
+                    } else {
+                        address.setLine1(userDTO.getLine1().trim());
+                        address.setLine2(clean(userDTO.getLine2()));
+                        address.setPostalCode(clean(userDTO.getPostalCode()));
+                        address.setMobile(userDTO.getMobile().trim());
+                        address.setCity(city);
+                        hibernateSession.merge(address);
+                    }
+
+                    hibernateSession.merge(user);
+                    transaction.commit();
+
+                    request.getSession().setAttribute("user", user);
+                    status = true;
+                    message = "Profile details updated successfully.";
+                }
+            } catch (Exception e) {
+                if (transaction != null) transaction.rollback();
+                message = "Failed to update profile details.";
+                e.printStackTrace();
+            } finally {
+                hibernateSession.close();
+            }
+        }
+
+        responseObject.addProperty("status", status);
+        responseObject.addProperty("message", message);
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
+    private User getSessionUser(HttpServletRequest request) {
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession == null || httpSession.getAttribute("user") == null) {
+            return null;
+        }
+        return (User) httpSession.getAttribute("user");
+    }
+
+    private UserDTO toUserProfileDTO(Session hibernateSession, User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setFname(user.getFname());
+        userDTO.setLname(user.getLname());
+        userDTO.setEmail(user.getEmail());
+
+        Address address = getUserAddress(hibernateSession, user.getId());
+        if (address != null) {
+            userDTO.setLine1(address.getLine1());
+            userDTO.setLine2(address.getLine2());
+            userDTO.setPostalCode(address.getPostalCode());
+            userDTO.setMobile(address.getMobile());
+
+            if (address.getCity() != null) {
+                userDTO.setCityId(address.getCity().getId());
+                userDTO.setCityName(address.getCity().getName());
+
+                if (address.getCity().getDistrict() != null) {
+                    userDTO.setDistrictId(address.getCity().getDistrict().getId());
+                    userDTO.setDistrictName(address.getCity().getDistrict().getName());
+
+                    if (address.getCity().getDistrict().getProvince() != null) {
+                        userDTO.setProvinceId(address.getCity().getDistrict().getProvince().getId());
+                        userDTO.setProvinceName(address.getCity().getDistrict().getProvince().getName());
+                    }
+                }
+            }
+        }
+
+        return userDTO;
+    }
+
+    private Address getUserAddress(Session hibernateSession, int userId) {
+        return hibernateSession.createQuery(
+                        "FROM Address a LEFT JOIN FETCH a.city c LEFT JOIN FETCH c.district d LEFT JOIN FETCH d.province WHERE a.user.id = :userId",
+                        Address.class)
+                .setParameter("userId", userId)
+                .setMaxResults(1)
+                .getSingleResultOrNull();
+    }
+
+    private String clean(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    public String getProvinces() {
+        JsonObject responseObject = new JsonObject();
+        Session hibernateSession = HibernateUtil.getSessionFactory().openSession();
+        try {
+            List<Province> provinceList = hibernateSession.createQuery(
+                    "FROM Province p ORDER BY p.name", Province.class).list();
+
+            JsonArray provinceArray = new JsonArray();
+            for (Province province : provinceList) {
+                JsonObject provinceObject = new JsonObject();
+                provinceObject.addProperty("id", province.getId());
+                provinceObject.addProperty("name", province.getName());
+                provinceArray.add(provinceObject);
+            }
+
+            responseObject.addProperty("status", true);
+            responseObject.add("data", provinceArray);
+        } catch (Exception e) {
+            responseObject.addProperty("status", false);
+            responseObject.addProperty("message", "Failed to load provinces.");
+            e.printStackTrace();
+        } finally {
+            hibernateSession.close();
+        }
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
+    public String getDistrictsByProvince(int provinceId) {
+        JsonObject responseObject = new JsonObject();
+        Session hibernateSession = HibernateUtil.getSessionFactory().openSession();
+        try {
+            List<District> districtList = hibernateSession.createQuery(
+                            "FROM District d WHERE d.province.id = :provinceId ORDER BY d.name",
+                            District.class)
+                    .setParameter("provinceId", provinceId)
+                    .list();
+
+            JsonArray districtArray = new JsonArray();
+            for (District district : districtList) {
+                JsonObject districtObject = new JsonObject();
+                districtObject.addProperty("id", district.getId());
+                districtObject.addProperty("name", district.getName());
+                districtArray.add(districtObject);
+            }
+
+            responseObject.addProperty("status", true);
+            responseObject.add("data", districtArray);
+        } catch (Exception e) {
+            responseObject.addProperty("status", false);
+            responseObject.addProperty("message", "Failed to load districts.");
+            e.printStackTrace();
+        } finally {
+            hibernateSession.close();
+        }
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
+    public String getCitiesByDistrict(int districtId) {
+        JsonObject responseObject = new JsonObject();
+        Session hibernateSession = HibernateUtil.getSessionFactory().openSession();
+        try {
+            List<City> cityList = hibernateSession.createQuery(
+                            "FROM City c WHERE c.district.id = :districtId ORDER BY c.name",
+                            City.class)
+                    .setParameter("districtId", districtId)
+                    .list();
+
+            JsonArray cityArray = new JsonArray();
+            for (City city : cityList) {
+                JsonObject cityObject = new JsonObject();
+                cityObject.addProperty("id", city.getId());
+                cityObject.addProperty("name", city.getName());
+                cityArray.add(cityObject);
+            }
+
+            responseObject.addProperty("status", true);
+            responseObject.add("data", cityArray);
+        } catch (Exception e) {
+            responseObject.addProperty("status", false);
+            responseObject.addProperty("message", "Failed to load cities.");
+            e.printStackTrace();
+        } finally {
+            hibernateSession.close();
+        }
         return AppUtil.GSON.toJson(responseObject);
     }
 }

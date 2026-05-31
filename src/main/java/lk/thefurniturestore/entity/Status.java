@@ -38,12 +38,14 @@ public class Status implements Serializable {
         INACTIVE,
         BLOCKED,
         DELIVERED,
+        SHIPPED,
         PACKING,
         APPROVED,
         REJECTED,
         CANCELLED,
         VERIFIED,
         RECEIVED,
-        COMPLETED
+        COMPLETED,
+        RETURNED
     }
 }

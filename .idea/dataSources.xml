@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="thefurniturestore@localhost" uuid="e0f618bd-e6bf-42b1-aeff-3e35c03f4f4a">
+    <data-source source="LOCAL" name="thefurniturestore@localhost" uuid="7373d5a3-2f7a-4468-93fd-7aa6d868f86e">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3307/thefurniturestore</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/thefurniturestore</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />

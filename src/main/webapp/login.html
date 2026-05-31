@@ -6,7 +6,7 @@
     <title>Login | THE FURNITURE STORE</title>
 
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="../../../../InvoicingSystem/src/main/webapp/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/logo.png">
 </head>
 <body>
@@ -36,19 +36,22 @@
                         <label for="password">password</label>
                         <input type="password" id="password" value="">
                     </div>
-                    <div class="row row-cols-2" style="margin-bottom: 5rem;">
-                        <div class="col-6" style="margin-top: 2rem;">
+                    <div class="login-options">
+                        <div>
                             <input type="checkbox" name="" id="rememberme">
                             <label for="rememberme">Remember Me</label>
                         </div>
-                        <div class="col-6" style="margin-top: 2rem;">
-                            <a href="" style="text-decoration: none; margin-left: 4rem; color: #6f6550;">Forgot Password ?</a>
+                        <div>
+                            <a href="">Forgot Password ?</a>
                         </div>
                     </div>
                    
                     <div class="buttons">
                         <button  class="login-btn" onclick="login();">LOGIN</button>
-                        <button class="register-btn">REGISTER</button>
+                        <button class="register-btn" onclick="gotoRegister();">REGISTER</button>
+                    </div>
+                    <div class="admin-login-link">
+                        <a href="adminLogin.html">Admin login</a>
                     </div>
                 </fieldset>
             </div>
@@ -61,6 +64,7 @@
 
     <!--    Main JS-->
     <script src="assets/js/login.js"></script>
+    <script src="assets/js/main.js"></script>
 
     <script src="assets/js/notification.js"></script>
     <script src="assets/js/notiflix-aio-3.2.8.min.js"></script>

@@ -6,142 +6,493 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile | THE FURNITURE STORE</title>
     <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="../../../../InvoicingSystem/src/main/webapp/css/bootstrap.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/logo.png">
-
     <script src="assets/js/header.js"></script>
 </head>
 
 <body>
+<header class="header axil-header header-style-1" id="page-header">
+    <header-content></header-content>
+</header>
 
-<div class="row">
-    <section class="profile-dashboard-section col-md-3">
-        <div class="profile-dashboard mt-4 mb-5 ms-4 p-4">
-            <h1>The Furniture Store</h1><br>
-            <a type="button" class="col-12" href="#">Cart</a><br>
-            <a type="button" class="col-12" href="#">Wishlist</a><br>
-            <a type="button" class="col-12" href="#">Orders</a><br>
-            <a type="button" class="col-12" href="#">Order History</a><br>
-            <a type="button" class="col-12" href="#">Log Out</a>
-            <div class="profile-dashboard-photo">
-            </div>
+<main class="profile-page"><br>
+    <section class="container profile-header-card ">
+        <div class="profile-avatar ">
+            <span id="profileInitials">--</span>
         </div>
+        <div>
+            <p class="label">MY ACCOUNT</p>
+            <h1 id="profileName">My Profile</h1>
+            <p id="profileEmailText">Loading profile details...</p>
+        </div>
+        <a href="cart.html" class="profile-cart-link">View Cart</a>
     </section>
 
-    <div class="col">
-        <section class="profile-details-section row d-flex justify-content-center align-items-center mt-4 mb-5">
-            <div class="main-profile-details col-11 p-4">
-                <div class="row d-flex align-items-center">
-                    <div class="main-profile-picture ms-3" style="width: 7rem;">
-                        <img src="product-01.jpg" alt="">
-                    </div>
-                    <div class="col-6 ms-4">
-                        <h2 style="font-weight: 550;">Shehani Kavindi</h2>
-                        <p>shehanikavindi2005@gmail.com</p>
-                    </div>
+    <section class="container profile-layout">
+        <aside class="profile-sidebar">
+            <a href="#" class="active" onclick="showProfileSection('details', this); return false;">Profile Details</a>
+            <a href="cart.html">My Cart</a>
+            <a href="#" onclick="showProfileSection('orders', this); return false;">Orders</a>
+            <a href="login.html">Log Out</a>
+        </aside>
+
+        <section class="profile-panel" id="profile-details-panel">
+            <div class="profile-panel-heading">
+                <div>
+                    <p class="label">PERSONAL INFO</p>
+                    <h2>Profile Details</h2>
                 </div>
+                <button type="button" class="profile-save-btn" onclick="updateProfileDetails();">Update Details</button>
             </div>
-            <div class="address-profile-details col-11 p-4">
-                <h2>Profile Details</h2>
-                <div class="straight-line"></div><br>
-                <div>
-                    <div class="row">
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label>First Name</label>
-                                <input type="text" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label>Last Name</label>
-                                <input type="text" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                        <div class="col-10">
-                            <div class="form-group">
-                                <label>Email Address</label>
-                                <input type="email" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                    </div>
-                </div> <br><br>
-                <h2>Address Details</h2>
-                <div class="straight-line"></div><br>
-                <div>
-                    <div class="row">
-                        <div class="col-10">
-                            <div class="form-group">
-                                <label>Line 01</label>
-                                <input type="text" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                        <div class="col-10">
-                            <div class="form-group">
-                                <label>Line 02</label>
-                                <input type="text" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                        <div class="col-5">
-                            <div class="form-group">
-                                <label>Postal code</label>
-                                <input type="text" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                        <div class="col-5">
-                            <div class="form-group">
-                                <label>City</label>
-                                <input type="text" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                        <div class="col-5">
-                            <div class="form-group">
-                                <label>District</label>
-                                <input type="text" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                        <div class="col-5">
-                            <div class="form-group">
-                                <label>Province</label>
-                                <input type="text" class="form-control" value="" id="">
-                            </div>
-                        </div>
-                    </div>
-                    <button class="col-3 update-details-btn">Update Details</button>
+
+            <form class="profile-form">
+                <div class="profile-form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" placeholder="Shehani">
                 </div>
+                <div class="profile-form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" placeholder="Kavindi">
+                </div>
+                <div class="profile-form-group wide">
+                    <label for="profileEmail">Email Address</label>
+                    <input type="email" id="profileEmail" placeholder="shehanikavindi2005@gmail.com">
+                </div>
+                <div class="profile-form-group wide">
+                    <label for="addressLineOne">Address Line 01</label>
+                    <input type="text" id="addressLineOne" placeholder="House number and street">
+                </div>
+                <div class="profile-form-group wide">
+                    <label for="addressLineTwo">Address Line 02</label>
+                    <input type="text" id="addressLineTwo" placeholder="Apartment, suite, or landmark">
+                </div>
+                <div class="profile-form-group">
+                    <label for="mobile">Mobile</label>
+                    <input type="text" id="mobile" placeholder="0771234567">
+                </div>
+                <div class="profile-form-group">
+                    <label for="postalCode">Postal Code</label>
+                    <input type="text" id="postalCode" placeholder="10250">
+                </div>
+                <div class="profile-form-group">
+                    <label for="province">Province</label>
+                    <select id="province">
+                        <option value="">Select Province</option>
+                    </select>
+                </div>
+                <div class="profile-form-group">
+                    <label for="district">District</label>
+                    <select id="district" disabled>
+                        <option value="">Select District</option>
+                    </select>
+                </div>
+                <div class="profile-form-group">
+                    <label for="city">City</label>
+                    <select id="city" disabled>
+                        <option value="">Select City</option>
+                    </select>
+                </div>
+            </form>
+        </section>
+
+        <section class="profile-panel" id="profile-orders-panel" style="display:none;">
+            <div class="profile-panel-heading">
+                <div>
+                    <p class="label">ORDERS</p>
+                    <h2>My Orders</h2>
+                </div>
+                <a href="shop.html" class="profile-save-btn" style="text-align:center; text-decoration:none;">Shop More</a>
+            </div>
+
+            <div class="profile-orders-list" id="profile-orders-list">
+                <div class="cart-empty-message">Loading orders...</div>
             </div>
         </section>
-    </div>
-</div>
-
-<!--    Main JS-->
-<script src="assets/js/.js"></script>
+    </section>
+</main>
 
 <script src="assets/js/notification.js"></script>
 <script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        showPendingProfileToast();
 
-<!-- Modernizer JS -->
+        document.getElementById('province').addEventListener('change', function() {
+            loadDistricts(this.value, '');
+            resetSelect('city', 'Select City', true);
+        });
+
+        document.getElementById('district').addEventListener('change', function() {
+            loadCities(this.value, '');
+        });
+
+        loadProfileDetails();
+    });
+
+    function showPendingProfileToast() {
+        const message = sessionStorage.getItem('profileToastMessage');
+        if (!message) {
+            return;
+        }
+
+        const status = sessionStorage.getItem('profileToastStatus') === 'true';
+        sessionStorage.removeItem('profileToastMessage');
+        sessionStorage.removeItem('profileToastStatus');
+        showProfileMessage(message, status);
+    }
+
+    function showProfileSection(section, link) {
+        document.getElementById('profile-details-panel').style.display = section === 'details' ? '' : 'none';
+        document.getElementById('profile-orders-panel').style.display = section === 'orders' ? '' : 'none';
+        document.querySelectorAll('.profile-sidebar a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+
+        if (section === 'orders') {
+            loadMyOrders();
+        }
+    }
+
+    async function loadMyOrders() {
+        const ordersList = document.getElementById('profile-orders-list');
+        ordersList.innerHTML = '<div class="cart-empty-message">Loading orders...</div>';
+
+        try {
+            const response = await fetch('api/orders/my-orders');
+            const data = await response.json();
+
+            if (!data.status) {
+                ordersList.innerHTML = '<div class="cart-empty-message">' + data.message + '</div>';
+                return;
+            }
+
+            if (!data.data || data.data.length === 0) {
+                ordersList.innerHTML = '<div class="cart-empty-message">No orders found.</div>';
+                return;
+            }
+
+            ordersList.innerHTML = '';
+            data.data.forEach(order => ordersList.appendChild(createProfileOrderCard(order)));
+        } catch (e) {
+            ordersList.innerHTML = '<div class="cart-empty-message">Failed to load orders.</div>';
+        }
+    }
+
+    function createProfileOrderCard(order) {
+        const card = document.createElement('article');
+        card.className = 'profile-order-card';
+        card.innerHTML =
+            '<div class="profile-order-top">' +
+                '<div>' +
+                    '<h3>Order #' + order.orderId + '</h3>' +
+                    '<p>' + escapeHtml(order.orderDate || '') + ' · ' + escapeHtml(order.deliveryType || '-') + '</p>' +
+                '</div>' +
+                '<span class="profile-order-status">' + escapeHtml(order.status || '-') + '</span>' +
+            '</div>' +
+            '<div class="profile-order-summary">' +
+                '<span>Items: ' + Number(order.itemCount || 0) + '</span>' +
+                '<span>Delivery: $' + formatMoney(order.deliveryFee || 0) + '</span>' +
+                '<strong>Total: $' + formatMoney(order.total || 0) + '</strong>' +
+            '</div>' +
+            '<div class="profile-order-items">' + createProfileOrderItems(order.items || []) + '</div>' +
+            createProfileOrderActions(order);
+        return card;
+    }
+
+    function createProfileOrderActions(order) {
+        const status = String(order.status || '').toUpperCase();
+        let actions = '';
+
+        if (status === 'DELIVERED') {
+            actions =
+                '<button type="button" class="profile-save-btn" onclick="updateMyOrderStatus(' + order.orderId + ', \'RECEIVED\')">Confirm Received</button>' +
+                '<button type="button" class="profile-save-btn" onclick="updateMyOrderStatus(' + order.orderId + ', \'RETURNED\')">Return</button>';
+        } else if (status !== 'CANCELLED' && status !== 'RECEIVED' && status !== 'RETURNED') {
+            actions = '<button type="button" class="profile-save-btn" onclick="updateMyOrderStatus(' + order.orderId + ', \'CANCELLED\')">Cancel Order</button>';
+        }
+
+        if (!actions) {
+            return '';
+        }
+
+        return '<div class="profile-order-summary" style="justify-content:flex-end;">' + actions + '</div>';
+    }
+
+    async function updateMyOrderStatus(orderId, status) {
+        try {
+            const response = await fetch('api/orders/my-orders/' + orderId + '/status', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: status })
+            });
+
+            const data = await response.json();
+            showProfileMessage(data.message, data.status);
+            if (data.status) {
+                loadMyOrders();
+            }
+        } catch (e) {
+            showProfileMessage('Failed to update order status.', false);
+        }
+    }
+
+    function createProfileOrderItems(items) {
+        if (!items.length) {
+            return '<p>No item details.</p>';
+        }
+
+        return items.map(item =>
+            '<p>' + escapeHtml(item.title || '-') +
+            ' <span>Qty ' + Number(item.quantity || 0) +
+            ' · $' + formatMoney(item.lineTotal || 0) + '</span></p>'
+        ).join('');
+    }
+
+    async function loadProfileDetails() {
+        try {
+            const response = await fetch('api/users/profile');
+            const data = await response.json();
+
+            if (!data.status) {
+                showProfileMessage(data.message, false);
+                return;
+            }
+
+            await fillProfileDetails(data.data);
+        } catch (e) {
+            showProfileMessage('Failed to load profile details.', false);
+        }
+    }
+
+    async function fillProfileDetails(user) {
+        document.getElementById('firstName').value = user.fname || '';
+        document.getElementById('lastName').value = user.lname || '';
+        document.getElementById('profileEmail').value = user.email || '';
+        document.getElementById('addressLineOne').value = user.line1 || '';
+        document.getElementById('addressLineTwo').value = user.line2 || '';
+        document.getElementById('mobile').value = user.mobile || '';
+        document.getElementById('postalCode').value = user.postalCode || '';
+
+        await loadProvinces(user.provinceId || '');
+        if (user.provinceId) {
+            await loadDistricts(user.provinceId, user.districtId || '');
+        }
+        if (user.districtId) {
+            await loadCities(user.districtId, user.cityId || '');
+        }
+
+        const fullName = ((user.fname || '') + ' ' + (user.lname || '')).trim();
+        document.getElementById('profileName').textContent = fullName || 'My Profile';
+        document.getElementById('profileEmailText').textContent = user.email || '';
+        document.getElementById('profileInitials').textContent = getInitials(user.fname, user.lname);
+    }
+
+    async function updateProfileDetails() {
+        if (!validateProfileDetails()) {
+            return;
+        }
+
+        const user = {
+            fname: document.getElementById('firstName').value.trim(),
+            lname: document.getElementById('lastName').value.trim(),
+            email: document.getElementById('profileEmail').value.trim(),
+            line1: document.getElementById('addressLineOne').value.trim(),
+            line2: document.getElementById('addressLineTwo').value.trim(),
+            mobile: document.getElementById('mobile').value.trim(),
+            postalCode: document.getElementById('postalCode').value.trim(),
+            provinceId: Number(document.getElementById('province').value),
+            districtId: Number(document.getElementById('district').value),
+            cityId: Number(document.getElementById('city').value)
+        };
+
+        try {
+            const response = await fetch('api/users/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            });
+
+            const data = await response.json();
+            showProfileMessage(data.message, data.status);
+
+            if (data.status) {
+                loadProfileDetails();
+            }
+        } catch (e) {
+            showProfileMessage('Failed to update profile details.', false);
+        }
+    }
+
+    async function loadProvinces(selectedProvinceId) {
+        try {
+            const response = await fetch('api/users/provinces');
+            const data = await response.json();
+
+            if (!data.status) {
+                showProfileMessage(data.message || 'Failed to load provinces.', false);
+                return;
+            }
+
+            fillSelect('province', data.data, 'Select Province', selectedProvinceId);
+        } catch (e) {
+            showProfileMessage('Failed to load provinces.', false);
+        }
+    }
+
+    async function loadDistricts(provinceId, selectedDistrictId) {
+        resetSelect('district', 'Select District', true);
+        resetSelect('city', 'Select City', true);
+
+        if (!provinceId) {
+            return;
+        }
+
+        try {
+            const response = await fetch('api/users/provinces/' + provinceId + '/districts');
+            const data = await response.json();
+
+            if (!data.status) {
+                showProfileMessage(data.message || 'Failed to load districts.', false);
+                return;
+            }
+
+            fillSelect('district', data.data, 'Select District', selectedDistrictId);
+            document.getElementById('district').disabled = false;
+        } catch (e) {
+            showProfileMessage('Failed to load districts.', false);
+        }
+    }
+
+    async function loadCities(districtId, selectedCityId) {
+        resetSelect('city', 'Select City', true);
+
+        if (!districtId) {
+            return;
+        }
+
+        try {
+            const response = await fetch('api/users/districts/' + districtId + '/cities');
+            const data = await response.json();
+
+            if (!data.status) {
+                showProfileMessage(data.message || 'Failed to load cities.', false);
+                return;
+            }
+
+            fillSelect('city', data.data, 'Select City', selectedCityId);
+            document.getElementById('city').disabled = false;
+        } catch (e) {
+            showProfileMessage('Failed to load cities.', false);
+        }
+    }
+
+    function fillSelect(selectId, dataList, placeholder, selectedValue) {
+        const select = document.getElementById(selectId);
+        resetSelect(selectId, placeholder, false);
+
+        dataList.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = item.name;
+            select.appendChild(option);
+        });
+
+        if (selectedValue) {
+            select.value = String(selectedValue);
+        }
+    }
+
+    function resetSelect(selectId, placeholder, disabled) {
+        const select = document.getElementById(selectId);
+        select.innerHTML = '<option value="">' + placeholder + '</option>';
+        select.disabled = disabled;
+    }
+
+    function validateProfileDetails() {
+        const mobilePattern = /^07[01245678][0-9]{7}$/;
+
+        if (!document.getElementById('firstName').value.trim()) {
+            showProfileMessage('First name is required!', false);
+            return false;
+        }
+        if (!document.getElementById('lastName').value.trim()) {
+            showProfileMessage('Last name is required!', false);
+            return false;
+        }
+        if (!document.getElementById('profileEmail').value.trim()) {
+            showProfileMessage('Email is required!', false);
+            return false;
+        }
+        if (!document.getElementById('addressLineOne').value.trim()) {
+            showProfileMessage('Address line 01 is required!', false);
+            return false;
+        }
+        if (!document.getElementById('mobile').value.trim()) {
+            showProfileMessage('Contact number is required!', false);
+            return false;
+        }
+        if (!mobilePattern.test(document.getElementById('mobile').value.trim())) {
+            showProfileMessage('Please enter a valid contact number!', false);
+            return false;
+        }
+        if (!document.getElementById('province').value) {
+            showProfileMessage('Province is required!', false);
+            return false;
+        }
+        if (!document.getElementById('district').value) {
+            showProfileMessage('District is required!', false);
+            return false;
+        }
+        if (!document.getElementById('city').value) {
+            showProfileMessage('City is required!', false);
+            return false;
+        }
+
+        return true;
+    }
+
+    function getInitials(firstName, lastName) {
+        const firstInitial = firstName && firstName.length > 0 ? firstName.charAt(0) : '';
+        const lastInitial = lastName && lastName.length > 0 ? lastName.charAt(0) : '';
+        const initials = (firstInitial + lastInitial).toUpperCase();
+        return initials || '--';
+    }
+
+    function showProfileMessage(message, status) {
+        if (window.Notiflix) {
+            if (status) {
+                Notiflix.Notify.success(message);
+            } else {
+                Notiflix.Notify.failure(message);
+            }
+        } else {
+            alert(message);
+        }
+    }
+
+    function formatMoney(value) {
+        return Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+</script>
 <script src="assets/js/vendor/modernizr.min.js"></script>
-<!-- jQuery JS -->
 <script src="assets/js/vendor/jquery.js"></script>
-<!-- Bootstrap JS -->
 <script src="assets/js/vendor/popper.min.js"></script>
 <script src="assets/js/vendor/bootstrap.min.js"></script>
-<script src="assets/js/vendor/slick.min.js"></script>
-<script src="assets/js/vendor/js.cookie.js"></script>
-<script src="assets/js/vendor/jquery-ui.min.js"></script>
-<script src="assets/js/vendor/jquery.ui.touch-punch.min.js"></script>
-<script src="assets/js/vendor/jquery.countdown.min.js"></script>
-<script src="assets/js/vendor/sal.js"></script>
-<script src="assets/js/vendor/jquery.magnific-popup.min.js"></script>
-<script src="assets/js/vendor/imagesloaded.pkgd.min.js"></script>
-<script src="assets/js/vendor/isotope.pkgd.min.js"></script>
-<script src="assets/js/vendor/counterup.js"></script>
-<script src="assets/js/vendor/waypoints.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>

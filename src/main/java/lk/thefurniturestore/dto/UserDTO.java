@@ -15,7 +15,11 @@ public class UserDTO implements Serializable {
     private String postalCode;
     private String mobile;
     private int cityId;
+    private int districtId;
+    private int provinceId;
     private String cityName;
+    private String districtName;
+    private String provinceName;
 
     public UserDTO(String firstName, String lastName, String email, String password) {
         this.fname = firstName;
@@ -91,12 +95,44 @@ public class UserDTO implements Serializable {
         this.cityId = cityId;
     }
 
+    public int getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(int districtId) {
+        this.districtId = districtId;
+    }
+
+    public int getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(int provinceId) {
+        this.provinceId = provinceId;
+    }
+
     public String getCityName() {
         return cityName;
     }
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
+    public String getProvinceName() {
+        return provinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
     }
 
     public String getLine1() {

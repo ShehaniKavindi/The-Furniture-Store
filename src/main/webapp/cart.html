@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart | THE FURNITURE STORE</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/logo.png">
+    <script src="assets/js/header.js"></script>
+</head>
+
+<body>
+<header class="header axil-header header-style-1" id="page-header">
+    <header-content></header-content>
+</header>
+
+<main class="cart-page">
+    <section class="container cart-heading">
+        <div>
+            <p class="label">SHOPPING CART</p>
+            <h1>Your selected furniture</h1>
+        </div>
+        <a href="shop.html" class="cart-link">Continue Shopping</a>
+    </section>
+
+    <section class="container cart-layout">
+        <div class="cart-items" id="cart-items">
+            <div class="cart-empty-message">Loading your cart...</div>
+        </div>
+
+        <aside class="cart-summary">
+            <h2>Order Summary</h2>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <strong id="cart-subtotal">$0.00</strong>
+            </div>
+            <div class="summary-row" style="display: block;">
+                <span>Delivery Type</span>
+                <select id="delivery-type" onchange="updateDeliverySelection();" style="width: 100%; margin-top: 0.5rem; padding: 0.55rem; border: 1px solid rgba(45,40,27,0.2);">
+                    <option value="">Loading delivery types...</option>
+                </select>
+            </div>
+            <div class="summary-row">
+                <span>Delivery</span>
+                <strong id="cart-delivery">$0.00</strong>
+            </div>
+            <div class="summary-row">
+                <span>Discount</span>
+                <strong>$0.00</strong>
+            </div>
+            <div class="summary-total">
+                <span>Total</span>
+                <strong id="cart-total">$0.00</strong>
+            </div>
+            <button type="button" class="checkout-btn" id="checkout-btn" onclick="startCheckout();">Proceed to Checkout</button>
+            <p>Confirm shipping details before paying securely with PayHere.</p>
+        </aside>
+    </section>
+</main>
+
+<div id="checkout-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(45,40,27,0.45); z-index:1000; align-items:center; justify-content:center; padding:1rem;">
+    <div style="background:#faf9f6; width:100%; max-width:520px; border-radius:2px; overflow:hidden; box-shadow:0 8px 40px rgba(45,40,27,0.25);">
+        <div style="padding:1.4rem 1.8rem; border-bottom:1px solid rgba(45,40,27,0.12); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <p class="label" style="margin:0;">CHECKOUT</p>
+                <h2 style="margin:0;">Confirm Delivery Details</h2>
+            </div>
+            <button type="button" onclick="closeCheckoutModal()" style="background:none; border:none; font-size:1.4rem; color:#6f6550;">&times;</button>
+        </div>
+        <div style="padding:1.5rem 1.8rem; display:grid; gap:0.8rem;">
+            <div class="summary-row"><span>Name</span><strong id="checkout-name">-</strong></div>
+            <div class="summary-row"><span>Email</span><strong id="checkout-email">-</strong></div>
+            <div class="summary-row"><span>Contact</span><strong id="checkout-mobile">-</strong></div>
+            <div class="summary-row" style="align-items:flex-start;"><span>Address</span><strong id="checkout-address" style="text-align:right;">-</strong></div>
+            <div class="summary-row"><span>Delivery Type</span><strong id="checkout-delivery-type">-</strong></div>
+            <div class="summary-row"><span>Subtotal</span><strong id="checkout-subtotal">$0.00</strong></div>
+            <div class="summary-row"><span>Delivery</span><strong id="checkout-delivery-fee">$0.00</strong></div>
+            <div class="summary-total"><span>Total</span><strong id="checkout-total">$0.00</strong></div>
+        </div>
+        <div style="padding:1rem 1.8rem 1.5rem; display:flex; justify-content:flex-end; gap:0.7rem; border-top:1px solid rgba(45,40,27,0.12);">
+            <a href="my-profile.html" class="cart-link" style="align-self:center;">Change Shipping Details</a>
+            <button type="button" class="checkout-btn" id="payhere-btn" onclick="payWithPayHere();" style="width:auto; padding:0.8rem 1.4rem;">Pay with PayHere</button>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/notification.js"></script>
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+<script src="https://www.payhere.lk/lib/payhere.js"></script>
+<script>
+    let cartSubtotal = 0;
+    let selectedDeliveryPrice = 0;
+    let preparedPayment = null;
+    let preparedDeliveryTypeId = 0;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadDeliveryTypes();
+        loadCart();
+    });
+
+    async function loadDeliveryTypes() {
+        const deliveryTypeSelect = document.getElementById('delivery-type');
+        deliveryTypeSelect.innerHTML = '<option value="">Loading delivery types...</option>';
+
+        try {
+            const response = await fetch('api/orders/delivery-types');
+            const data = await response.json();
+
+            if (!data.status || !data.data || data.data.length === 0) {
+                deliveryTypeSelect.innerHTML = '<option value="">No delivery types available</option>';
+                selectedDeliveryPrice = 0;
+                updateSummary(cartSubtotal);
+                return;
+            }
+
+            deliveryTypeSelect.innerHTML = '<option value="">Select Delivery Type</option>';
+            data.data.forEach(deliveryType => {
+                const option = document.createElement('option');
+                option.value = deliveryType.id;
+                option.dataset.price = deliveryType.price;
+                option.textContent = deliveryType.name + ' - $' + Number(deliveryType.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                deliveryTypeSelect.appendChild(option);
+            });
+        } catch (e) {
+            deliveryTypeSelect.innerHTML = '<option value="">Failed to load delivery types</option>';
+            selectedDeliveryPrice = 0;
+            updateSummary(cartSubtotal);
+        }
+    }
+
+    async function loadCart() {
+        const cartItems = document.getElementById('cart-items');
+        cartItems.innerHTML = '<div class="cart-empty-message">Loading your cart...</div>';
+
+        try {
+            const response = await fetch('api/cart');
+            const data = await response.json();
+
+            if (!data.status) {
+                cartItems.innerHTML = '<div class="cart-empty-message">' + data.message + '</div>';
+                updateSummary(0);
+                return;
+            }
+
+            if (!data.data || data.data.length === 0) {
+                cartItems.innerHTML = '<div class="cart-empty-message">Your cart is empty.</div>';
+                updateSummary(0);
+                return;
+            }
+
+            cartItems.innerHTML = '';
+            data.data.forEach(item => cartItems.appendChild(createCartItem(item)));
+            updateSummary(Number(data.subtotal || 0));
+        } catch (e) {
+            cartItems.innerHTML = '<div class="cart-empty-message">Failed to load cart.</div>';
+            updateSummary(0);
+        }
+    }
+
+    function createCartItem(item) {
+        const article = document.createElement('article');
+        article.className = 'cart-item';
+        const unitPrice = Number(item.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const lineTotal = Number(item.lineTotal).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        article.innerHTML =
+            '<img src="' + item.imagePath + '" alt="' + escapeHtml(item.title) + '">' +
+            '<div class="cart-item-info">' +
+                '<h3>' + escapeHtml(item.title) + '</h3>' +
+                '<p>' + escapeHtml(item.description || '') + '</p>' +
+                '<div class="cart-item-meta">' +
+                    '<span>Unit Price</span>' +
+                    '<strong>$' + unitPrice + '</strong>' +
+                '</div>' +
+                '<div class="cart-item-actions">' +
+                    '<label for="qty-' + item.cartId + '">Qty</label>' +
+                    '<input type="number" id="qty-' + item.cartId + '" value="' + item.quantity + '" min="1" max="' + item.availableQuantity + '">' +
+                    '<button type="button" onclick="updateCartItem(' + item.cartId + ')">Update</button>' +
+                    '<button type="button" onclick="removeCartItem(' + item.cartId + ')">Remove</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="cart-line-total">' +
+                '<span>Total</span>' +
+                '<strong>$' + lineTotal + '</strong>' +
+            '</div>';
+        return article;
+    }
+
+    async function updateCartItem(cartId) {
+        const quantity = Number(document.getElementById('qty-' + cartId).value);
+
+        if (!quantity || quantity < 1) {
+            showCartMessage('Please enter a valid quantity.', false);
+            return;
+        }
+
+        try {
+            const response = await fetch('api/cart/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cartId: cartId,
+                    quantity: quantity
+                })
+            });
+            const data = await response.json();
+            showCartMessage(data.message, data.status);
+            if (data.status) loadCart();
+        } catch (e) {
+            showCartMessage('Failed to update cart.', false);
+        }
+    }
+
+    async function removeCartItem(cartId) {
+        try {
+            const response = await fetch('api/cart/remove/' + cartId, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            showCartMessage(data.message, data.status);
+            if (data.status) loadCart();
+        } catch (e) {
+            showCartMessage('Failed to remove cart item.', false);
+        }
+    }
+
+    async function startCheckout() {
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const deliveryTypeId = Number(document.getElementById('delivery-type').value);
+
+        if (!deliveryTypeId) {
+            showCartMessage('Please select a delivery type.', false);
+            return;
+        }
+
+        checkoutBtn.disabled = true;
+        checkoutBtn.textContent = 'Preparing Checkout...';
+
+        try {
+            const response = await fetch('api/orders/payhere/prepare', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    deliveryTypeId: deliveryTypeId
+                })
+            });
+            const data = await response.json();
+
+            if (data.status) {
+                preparedPayment = data.payment;
+                preparedDeliveryTypeId = deliveryTypeId;
+                showCheckoutModal(data.shipping);
+            } else {
+                if (isMissingShippingDetailsMessage(data.message)) {
+                    sessionStorage.setItem('profileToastMessage', data.message);
+                    sessionStorage.setItem('profileToastStatus', 'false');
+                    window.location.href = 'my-profile.html';
+                    return;
+                }
+                showCartMessage(data.message, false);
+            }
+        } catch (e) {
+            showCartMessage('Failed to prepare checkout.', false);
+        } finally {
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = 'Proceed to Checkout';
+        }
+    }
+
+    function isMissingShippingDetailsMessage(message) {
+        return String(message || '').toLowerCase().includes('complete your shipping details');
+    }
+
+    function showCheckoutModal(shipping) {
+        document.getElementById('checkout-name').textContent = shipping.name || '-';
+        document.getElementById('checkout-email').textContent = shipping.email || '-';
+        document.getElementById('checkout-mobile').textContent = shipping.mobile || '-';
+        document.getElementById('checkout-address').textContent = (shipping.address || '-') + ', ' + (shipping.city || '');
+        document.getElementById('checkout-delivery-type').textContent = shipping.deliveryType || '-';
+        document.getElementById('checkout-subtotal').textContent = '$' + formatMoney(shipping.subtotal || 0);
+        document.getElementById('checkout-delivery-fee').textContent = '$' + formatMoney(shipping.deliveryFee || 0);
+        document.getElementById('checkout-total').textContent = '$' + formatMoney(shipping.total || 0);
+        document.getElementById('checkout-modal-overlay').style.display = 'flex';
+    }
+
+    function closeCheckoutModal() {
+        document.getElementById('checkout-modal-overlay').style.display = 'none';
+    }
+
+    function payWithPayHere() {
+        if (!preparedPayment) {
+            showCartMessage('Please prepare checkout first.', false);
+            return;
+        }
+
+        payhere.onCompleted = async function onCompleted(paymentId) {
+            await placeOrderAfterPayment(paymentId);
+        };
+
+        payhere.onDismissed = function onDismissed() {
+            showCartMessage('Payment was dismissed.', false);
+        };
+
+        payhere.onError = function onError(error) {
+            showCartMessage('PayHere payment failed: ' + error, false);
+        };
+
+        payhere.startPayment({
+            sandbox: preparedPayment.sandbox,
+            merchant_id: preparedPayment.merchantId,
+            return_url: preparedPayment.returnUrl,
+            cancel_url: preparedPayment.cancelUrl,
+            notify_url: preparedPayment.notifyUrl,
+            order_id: preparedPayment.orderId,
+            items: preparedPayment.items,
+            amount: preparedPayment.amount,
+            currency: preparedPayment.currency,
+            hash: preparedPayment.hash,
+            first_name: preparedPayment.firstName,
+            last_name: preparedPayment.lastName,
+            email: preparedPayment.email,
+            phone: preparedPayment.phone,
+            address: preparedPayment.address,
+            city: preparedPayment.city,
+            country: preparedPayment.country
+        });
+    }
+
+    async function placeOrderAfterPayment(paymentId) {
+        const payhereBtn = document.getElementById('payhere-btn');
+        payhereBtn.disabled = true;
+        payhereBtn.textContent = 'Placing Order...';
+
+        try {
+            const response = await fetch('api/orders/place', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    deliveryTypeId: preparedDeliveryTypeId,
+                    paymentId: paymentId,
+                    payhereOrderId: preparedPayment.orderId
+                })
+            });
+            const data = await response.json();
+
+            if (data.status) {
+                closeCheckoutModal();
+                showInvoice(data.data);
+                preparedPayment = null;
+                preparedDeliveryTypeId = 0;
+                loadCart();
+                loadDeliveryTypes();
+            } else {
+                showCartMessage(data.message, false);
+            }
+        } catch (e) {
+            showCartMessage('Payment completed, but order creation failed. Please contact support with payment ID: ' + paymentId, false);
+        } finally {
+            payhereBtn.disabled = false;
+            payhereBtn.textContent = 'Pay with PayHere';
+        }
+    }
+
+    function updateSummary(subtotal) {
+        cartSubtotal = subtotal;
+        const total = cartSubtotal + selectedDeliveryPrice;
+        const formattedSubtotal = '$' + cartSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const formattedDelivery = '$' + selectedDeliveryPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const formattedTotal = '$' + total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('cart-subtotal').textContent = formattedSubtotal;
+        document.getElementById('cart-delivery').textContent = formattedDelivery;
+        document.getElementById('cart-total').textContent = formattedTotal;
+    }
+
+    function updateDeliverySelection() {
+        const selectedOption = document.getElementById('delivery-type').selectedOptions[0];
+        selectedDeliveryPrice = selectedOption && selectedOption.dataset.price ? Number(selectedOption.dataset.price) : 0;
+        updateSummary(cartSubtotal);
+    }
+
+    function showInvoice(invoice) {
+        if (!invoice) {
+            showCartMessage('Order placed successfully.', true);
+            return;
+        }
+
+        const total = '$' + Number(invoice.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const message = 'Order ID: #' + invoice.orderId +
+            '<br>Delivery: ' + escapeHtml(invoice.deliveryType || '') +
+            '<br>Items: ' + Number(invoice.itemCount || 0) +
+            '<br>Total: ' + total;
+
+        if (window.Notiflix) {
+            Notiflix.Report.success('Order Placed', message, 'OK');
+        } else {
+            alert('Order placed successfully. Order ID: #' + invoice.orderId);
+        }
+    }
+
+    function formatMoney(value) {
+        return Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function showCartMessage(message, status) {
+        if (window.Notiflix) {
+            if (status) {
+                Notiflix.Notify.success(message);
+            } else {
+                Notiflix.Notify.failure(message);
+            }
+        } else {
+            alert(message);
+        }
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+</script>
+<script src="assets/js/vendor/modernizr.min.js"></script>
+<script src="assets/js/vendor/jquery.js"></script>
+<script src="assets/js/vendor/popper.min.js"></script>
+<script src="assets/js/vendor/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

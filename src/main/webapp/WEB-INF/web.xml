@@ -4,4 +4,53 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
+    <welcome-file-list>
+        <welcome-file>login.html</welcome-file>
+    </welcome-file-list>
+
+    <filter>
+        <filter-name>AccessControlFilter</filter-name>
+        <filter-class>lk.thefurniturestore.middleware.AccessControlFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>AuthAccessFilter</filter-name>
+        <filter-class>lk.thefurniturestore.middleware.AuthAccessFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>AccessControlFilter</filter-name>
+        <url-pattern>/cart.html</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AccessControlFilter</filter-name>
+        <url-pattern>/my-profile.html</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AccessControlFilter</filter-name>
+        <url-pattern>/admin.html</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AuthAccessFilter</filter-name>
+        <url-pattern>/login.html</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AuthAccessFilter</filter-name>
+        <url-pattern>/register.html</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AuthAccessFilter</filter-name>
+        <url-pattern>/verify-account.html</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AuthAccessFilter</filter-name>
+        <url-pattern>/adminLogin.html</url-pattern>
+    </filter-mapping>
+
 </web-app>

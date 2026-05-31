@@ -1,10 +1,6 @@
 package lk.thefurniturestore.entity;
 
 import jakarta.persistence.*;
-import lk.thefurniturestore.entity.BaseEntity;
-
-import java.time.LocalDateTime;
-
 @Entity
 public class Product extends BaseEntity{
     @Id
@@ -26,12 +22,6 @@ public class Product extends BaseEntity{
 
     @Column(nullable = false)
     private int quantity;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
 
     public int getId() {
         return id;
@@ -81,23 +71,4 @@ public class Product extends BaseEntity{
         this.quantity = quantity;
     }
 
-    @Override
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    @Override
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @Override
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    @Override
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

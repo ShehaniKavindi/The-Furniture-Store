@@ -12,7 +12,6 @@ import java.io.File;
 
 public class Main {
     private static final int SERVER_PORT = 8080;
-//    private static final int SERVER_PORT = 9090;
     private static final String CONTEXT_PATH = "/thefurniturestore";
 
     public static void main(String[] args) {
@@ -29,6 +28,7 @@ public class Main {
 
             tomcat.start();
             System.out.println("App URL: http://localhost:" + SERVER_PORT + CONTEXT_PATH);
+            System.out.println("App URL: https://stipulate-chirping-material.ngrok-free.dev/thefurniturestore");
             tomcat.getServer().await();
 
         }catch(LifecycleException e){

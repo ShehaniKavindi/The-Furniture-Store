@@ -8,24 +8,25 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 
 public class PayHereUtil {
-    private static final String MERCHANT_ID = ""; // replace with your merchant id
-    private static final String MERCHANT_SECRET = ""; // replace with your merchant secret
-
     public static String getMerchantId() {
-        return MERCHANT_ID;
+        return Env.get("payhere.merchant.id");
     }
 
     public static String getMerchantSecret() {
-        return MERCHANT_SECRET;
+        return Env.get("payhere.merchant.secret");
+    }
+
+    public static boolean isSandbox() {
+        return Boolean.parseBoolean(Env.get("payhere.sandbox"));
     }
 
     public static String generateHash(String orderId, double amount, String currency) {
 
         String formattedAmount = String.format(Locale.US, "%.2f", amount);
 
-        String secretHash = md5(MERCHANT_SECRET).toUpperCase();
+        String secretHash = md5(getMerchantSecret()).toUpperCase();
 
-        String raw = MERCHANT_ID
+        String raw = getMerchantId()
                 + orderId
                 + formattedAmount
                 + currency
@@ -49,7 +50,7 @@ public class PayHereUtil {
                         amount +
                         currency +
                         statusCode +
-                        md5(MERCHANT_SECRET).toUpperCase()
+                        md5(getMerchantSecret()).toUpperCase()
         ).toUpperCase();
 
         return localSig.equals(receivedSig);

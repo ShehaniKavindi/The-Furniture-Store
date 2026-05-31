@@ -49,4 +49,58 @@ public class UserController {
 //        new CartService().mergeUserCarts(request);
         return Response.ok().entity(responseJson).build();
     }
+
+    @Path("/verify")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response verifyUserAccount(String jsonData) {
+        UserDTO userDTO = AppUtil.GSON.fromJson(jsonData, UserDTO.class);
+        String responseJson = new UserService().verifyUserAccount(userDTO);
+        return Response.ok().entity(responseJson).build();
+    }
+
+    @Path("/profile")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @IsUser
+    public Response getUserProfile(@Context HttpServletRequest request) {
+        String responseJson = new UserService().getUserProfile(request);
+        return Response.ok().entity(responseJson).build();
+    }
+
+    @Path("/profile")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @IsUser
+    public Response updateUserProfile(String jsonData, @Context HttpServletRequest request) {
+        UserDTO userDTO = AppUtil.GSON.fromJson(jsonData, UserDTO.class);
+        String responseJson = new UserService().updateUserProfile(userDTO, request);
+        return Response.ok().entity(responseJson).build();
+    }
+
+    @Path("/provinces")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProvinces() {
+        String responseJson = new UserService().getProvinces();
+        return Response.ok().entity(responseJson).build();
+    }
+
+    @Path("/provinces/{id}/districts")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDistrictsByProvince(@PathParam("id") int provinceId) {
+        String responseJson = new UserService().getDistrictsByProvince(provinceId);
+        return Response.ok().entity(responseJson).build();
+    }
+
+    @Path("/districts/{id}/cities")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCitiesByDistrict(@PathParam("id") int districtId) {
+        String responseJson = new UserService().getCitiesByDistrict(districtId);
+        return Response.ok().entity(responseJson).build();
+    }
 }
