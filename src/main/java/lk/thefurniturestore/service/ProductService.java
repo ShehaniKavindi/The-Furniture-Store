@@ -252,6 +252,102 @@ public class ProductService {
         return AppUtil.GSON.toJson(responseObject);
     }
 
+    public String updateProduct(int id, String jsonData) {
+        JsonObject responseObject = new JsonObject();
+        boolean status = false;
+        String message;
+
+        JsonObject requestObject = AppUtil.GSON.fromJson(jsonData, JsonObject.class);
+        String title = getString(requestObject, "title");
+        String description = getString(requestObject, "description");
+        String price = getString(requestObject, "price");
+
+        if (title.isBlank()) {
+            message = "Title is required!";
+        } else if (description.isBlank()) {
+            message = "Description is required!";
+        } else if (price.isBlank()) {
+            message = "Price is required!";
+        } else {
+            double parsedPrice;
+            try {
+                parsedPrice = Double.parseDouble(price);
+                if (parsedPrice <= 0) throw new NumberFormatException();
+            } catch (NumberFormatException e) {
+                responseObject.addProperty("status", false);
+                responseObject.addProperty("message", "Please enter a valid price!");
+                return AppUtil.GSON.toJson(responseObject);
+            }
+
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = null;
+            try {
+                Product product = session.get(Product.class, id);
+                if (product == null) {
+                    message = "Product not found!";
+                } else {
+                    transaction = session.beginTransaction();
+                    product.setTitle(title);
+                    product.setDescription(description);
+                    product.setPrice(parsedPrice);
+                    session.merge(product);
+                    transaction.commit();
+                    status = true;
+                    message = "Product details updated successfully!";
+                }
+            } catch (Exception e) {
+                if (transaction != null) transaction.rollback();
+                message = "Failed to update product details.";
+                e.printStackTrace();
+            } finally {
+                session.close();
+            }
+        }
+
+        responseObject.addProperty("status", status);
+        responseObject.addProperty("message", message);
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
+    public String addProductStock(int id, String jsonData) {
+        JsonObject responseObject = new JsonObject();
+        boolean status = false;
+        String message;
+
+        JsonObject requestObject = AppUtil.GSON.fromJson(jsonData, JsonObject.class);
+        int quantity = getInt(requestObject, "quantity");
+
+        if (quantity <= 0) {
+            message = "Please enter a valid quantity!";
+        } else {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = null;
+            try {
+                Product product = session.get(Product.class, id);
+                if (product == null) {
+                    message = "Product not found!";
+                } else {
+                    transaction = session.beginTransaction();
+                    product.setQuantity(product.getQuantity() + quantity);
+                    session.merge(product);
+                    transaction.commit();
+                    status = true;
+                    message = "Stock updated successfully!";
+                }
+            } catch (Exception e) {
+                if (transaction != null) transaction.rollback();
+                message = "Failed to update stock.";
+                e.printStackTrace();
+            } finally {
+                session.close();
+            }
+        }
+
+        responseObject.addProperty("status", status);
+        responseObject.addProperty("message", message);
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
     public String getAllCategories() {
         JsonObject responseObject = new JsonObject();
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -328,5 +424,23 @@ public class ProductService {
         responseObject.addProperty("status", status);
         responseObject.addProperty("message", message);
         return AppUtil.GSON.toJson(responseObject);
+    }
+
+    private String getString(JsonObject requestObject, String key) {
+        if (requestObject == null || !requestObject.has(key) || requestObject.get(key).isJsonNull()) {
+            return "";
+        }
+        return requestObject.get(key).getAsString().trim();
+    }
+
+    private int getInt(JsonObject requestObject, String key) {
+        if (requestObject == null || !requestObject.has(key) || requestObject.get(key).isJsonNull()) {
+            return 0;
+        }
+        try {
+            return requestObject.get(key).getAsInt();
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

@@ -88,6 +88,24 @@ public class ProductController {
         return Response.ok().entity(responseJson).build();
     }
 
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateProduct(@PathParam("id") int id, String jsonData) {
+        String responseJson = new ProductService().updateProduct(id, jsonData);
+        return Response.ok().entity(responseJson).build();
+    }
+
+    @PUT
+    @Path("/{id}/stock")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addProductStock(@PathParam("id") int id, String jsonData) {
+        String responseJson = new ProductService().addProductStock(id, jsonData);
+        return Response.ok().entity(responseJson).build();
+    }
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

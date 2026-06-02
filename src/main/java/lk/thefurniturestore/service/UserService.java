@@ -12,6 +12,7 @@ import lk.thefurniturestore.entity.District;
 import lk.thefurniturestore.entity.Province;
 import lk.thefurniturestore.entity.Status;
 import lk.thefurniturestore.entity.User;
+import lk.thefurniturestore.mail.ForgotPasswordMail;
 import lk.thefurniturestore.mail.VerificationMail;
 import lk.thefurniturestore.provider.MailServiceProvider;
 import lk.thefurniturestore.util.AppUtil;
@@ -129,6 +130,43 @@ public class UserService {
 
             }
             hibernateSession.close();
+        }
+
+        responseObject.addProperty("status", status);
+        responseObject.addProperty("message", message);
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
+    public String forgotPassword(UserDTO userDTO) {
+        JsonObject responseObject = new JsonObject();
+        boolean status = false;
+        String message;
+
+        if (userDTO == null || userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
+            message = "email is required";
+        } else if (!userDTO.getEmail().matches(Validator.EMAIL_VALIDATION)) {
+            message = "Please enter a valid email!";
+        } else {
+            Session hibernateSession = HibernateUtil.getSessionFactory().openSession();
+            try {
+                User user = hibernateSession.createNamedQuery("User.getByEmail", User.class)
+                        .setParameter("email", userDTO.getEmail().trim())
+                        .getSingleResultOrNull();
+
+                if (user == null) {
+                    message = "email is not found";
+                } else {
+                    ForgotPasswordMail forgotPasswordMail = new ForgotPasswordMail(user.getEmail(), user.getPassword());
+                    MailServiceProvider.getInstance().sendMail(forgotPasswordMail);
+                    status = true;
+                    message = "Password has been sent to your email.";
+                }
+            } catch (Exception e) {
+                message = "Failed to send password email. Please try again.";
+                e.printStackTrace();
+            } finally {
+                hibernateSession.close();
+            }
         }
 
         responseObject.addProperty("status", status);

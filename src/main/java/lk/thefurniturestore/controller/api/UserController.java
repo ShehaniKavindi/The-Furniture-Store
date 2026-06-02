@@ -50,6 +50,16 @@ public class UserController {
         return Response.ok().entity(responseJson).build();
     }
 
+    @Path("/forgot-password")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response forgotPassword(String jsonData) {
+        UserDTO userDTO = AppUtil.GSON.fromJson(jsonData, UserDTO.class);
+        String responseJson = new UserService().forgotPassword(userDTO);
+        return Response.ok().entity(responseJson).build();
+    }
+
     @Path("/verify")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

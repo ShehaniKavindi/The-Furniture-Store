@@ -833,15 +833,12 @@
                             <th>Price</th>
                             <th>Stock</th>
                             <th>Status</th>
+                            <th>Add Stocks</th>
+                            <th>Edit</th>
                         </tr>
                         </thead>
                         <tbody id="products-table-body">
-                        <tr><td>Teak Sofa Set</td><td>Living Room</td><td>$145,000</td><td>8</td><td><span class="status-badge delivered">Active</span></td></tr>
-                        <tr><td>Walnut Dining Set</td><td>Dining Room</td><td>$98,500</td><td>5</td><td><span class="status-badge delivered">Active</span></td></tr>
-                        <tr><td>Oak Bookshelf</td><td>Storage</td><td>$62,000</td><td>12</td><td><span class="status-badge delivered">Active</span></td></tr>
-                        <tr><td>Walnut Dining Chair</td><td>Dining Room</td><td>$18,500</td><td>3</td><td><span class="status-badge pending">Low Stock</span></td></tr>
-                        <tr><td>Rattan Lounge Chair</td><td>Living Room</td><td>$54,000</td><td>0</td><td><span class="status-badge cancelled">Out of Stock</span></td></tr>
-                        <tr><td>Teak Coffee Table</td><td>Living Room</td><td>$38,000</td><td>9</td><td><span class="status-badge delivered">Active</span></td></tr>
+                        <tr><td colspan="7">Loading products...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -957,6 +954,64 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- ADD STOCK MODAL -->
+<div id="stock-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(45,40,27,0.45); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:var(--white); width:100%; max-width:460px; border-radius:2px; overflow:hidden; box-shadow: 0 8px 40px rgba(45,40,27,0.25);">
+        <div style="padding:1.4rem 1.8rem; border-bottom:1px solid var(--bg-color); display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-family:'main',serif; font-size:1.3rem; font-weight:400; letter-spacing:1px; color:var(--darkest-brown);">Add Stocks</span>
+            <button onclick="closeStockModal()" style="background:none; border:none; cursor:pointer; color:var(--light-grey-brown); font-size:1.3rem; line-height:1;">&times;</button>
+        </div>
+        <div style="padding:1.5rem 1.8rem; display:flex; flex-direction:column; gap:1rem;">
+            <input type="hidden" id="stock-product-id">
+            <div>
+                <p class="label" style="margin-bottom:0.25rem;">PRODUCT</p>
+                <h3 id="stock-product-title" style="font-family:'main',serif; color:var(--darkest-brown); margin:0;"></h3>
+                <p id="stock-product-description" style="font-family:'sub',sans-serif; color:var(--dark-grey-brown); margin:0.35rem 0 0;"></p>
+                <strong id="stock-product-price" style="font-family:'sub',sans-serif; color:var(--darkest-brown); display:block; margin-top:0.45rem;"></strong>
+            </div>
+            <div>
+                <label for="stock-quantity" style="display:block; font-family:'sub',sans-serif; font-size:0.75rem; letter-spacing:1px; color:var(--dark-grey-brown); margin-bottom:0.35rem;">QUANTITY</label>
+                <input id="stock-quantity" type="number" min="1" placeholder="0" style="width:100%; height:2.6rem; border:1px solid rgba(45,40,27,0.2); border-radius:2px; padding:0 0.8rem; font-family:'main',serif; font-size:0.95rem; background:var(--bg-color); color:var(--darkest-brown); outline:none;">
+            </div>
+            <div id="stock-modal-error" style="display:none; font-size:0.75rem; color:#b06060; padding:0.5rem 0.8rem; background:rgba(176,96,96,0.08); border-radius:2px;"></div>
+        </div>
+        <div style="padding:1rem 1.8rem 1.5rem; display:flex; justify-content:flex-end; gap:0.7rem; border-top:1px solid var(--bg-color);">
+            <button onclick="closeStockModal()" style="height:2.4rem; padding:0 1.2rem; border:1px solid rgba(45,40,27,0.2); border-radius:2px; background:transparent; font-family:'sub',sans-serif; font-size:0.75rem; letter-spacing:1px; color:var(--dark-grey-brown); cursor:pointer;">CANCEL</button>
+            <button id="save-stock-btn" onclick="submitStock()" style="height:2.4rem; padding:0 1.4rem; border:none; border-radius:2px; background:var(--darkest-brown); font-family:'sub',sans-serif; font-size:0.75rem; letter-spacing:1px; color:var(--white); cursor:pointer;">UPDATE STOCK</button>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL -->
+<div id="edit-product-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(45,40,27,0.45); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:var(--white); width:100%; max-width:480px; border-radius:2px; overflow:hidden; box-shadow: 0 8px 40px rgba(45,40,27,0.25);">
+        <div style="padding:1.4rem 1.8rem; border-bottom:1px solid var(--bg-color); display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-family:'main',serif; font-size:1.3rem; font-weight:400; letter-spacing:1px; color:var(--darkest-brown);">Edit Product</span>
+            <button onclick="closeEditProductModal()" style="background:none; border:none; cursor:pointer; color:var(--light-grey-brown); font-size:1.3rem; line-height:1;">&times;</button>
+        </div>
+        <div style="padding:1.5rem 1.8rem; display:flex; flex-direction:column; gap:1rem;">
+            <input type="hidden" id="edit-product-id">
+            <div>
+                <label for="edit-product-title" style="display:block; font-family:'sub',sans-serif; font-size:0.75rem; letter-spacing:1px; color:var(--dark-grey-brown); margin-bottom:0.35rem;">TITLE</label>
+                <input id="edit-product-title" type="text" style="width:100%; height:2.6rem; border:1px solid rgba(45,40,27,0.2); border-radius:2px; padding:0 0.8rem; font-family:'main',serif; font-size:0.95rem; background:var(--bg-color); color:var(--darkest-brown); outline:none;">
+            </div>
+            <div>
+                <label for="edit-product-description" style="display:block; font-family:'sub',sans-serif; font-size:0.75rem; letter-spacing:1px; color:var(--dark-grey-brown); margin-bottom:0.35rem;">DESCRIPTION</label>
+                <textarea id="edit-product-description" rows="4" style="width:100%; border:1px solid rgba(45,40,27,0.2); border-radius:2px; padding:0.6rem 0.8rem; font-family:'sub',sans-serif; font-size:0.82rem; background:var(--bg-color); color:var(--darkest-brown); outline:none; resize:vertical;"></textarea>
+            </div>
+            <div>
+                <label for="edit-product-price" style="display:block; font-family:'sub',sans-serif; font-size:0.75rem; letter-spacing:1px; color:var(--dark-grey-brown); margin-bottom:0.35rem;">UNIT PRICE</label>
+                <input id="edit-product-price" type="number" min="1" step="0.01" style="width:100%; height:2.6rem; border:1px solid rgba(45,40,27,0.2); border-radius:2px; padding:0 0.8rem; font-family:'main',serif; font-size:0.95rem; background:var(--bg-color); color:var(--darkest-brown); outline:none;">
+            </div>
+            <div id="edit-product-modal-error" style="display:none; font-size:0.75rem; color:#b06060; padding:0.5rem 0.8rem; background:rgba(176,96,96,0.08); border-radius:2px;"></div>
+        </div>
+        <div style="padding:1rem 1.8rem 1.5rem; display:flex; justify-content:flex-end; gap:0.7rem; border-top:1px solid var(--bg-color);">
+            <button onclick="closeEditProductModal()" style="height:2.4rem; padding:0 1.2rem; border:1px solid rgba(45,40,27,0.2); border-radius:2px; background:transparent; font-family:'sub',sans-serif; font-size:0.75rem; letter-spacing:1px; color:var(--dark-grey-brown); cursor:pointer;">CANCEL</button>
+            <button id="save-edit-product-btn" onclick="submitProductDetails()" style="height:2.4rem; padding:0 1.4rem; border:none; border-radius:2px; background:var(--darkest-brown); font-family:'sub',sans-serif; font-size:0.75rem; letter-spacing:1px; color:var(--white); cursor:pointer;">UPDATE DETAILS</button>
+        </div>
     </div>
 </div>
 
@@ -1236,6 +1291,14 @@
 
     document.getElementById('admin-modal-overlay').addEventListener('click', function(e) {
         if (e.target === this) closeAdminModal();
+    });
+
+    document.getElementById('stock-modal-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeStockModal();
+    });
+
+    document.getElementById('edit-product-modal-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeEditProductModal();
     });
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1599,26 +1662,26 @@
         const tbody = document.getElementById('products-table-body');
         if (!tbody) return;
 
-        tbody.innerHTML = '<tr><td colspan="5">Loading products...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7">Loading products...</td></tr>';
 
         try {
             const response = await fetch('api/products');
             const data = await response.json();
 
             if (!data.status) {
-                tbody.innerHTML = '<tr><td colspan="5">' + (data.message || 'Failed to load products.') + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7">' + (data.message || 'Failed to load products.') + '</td></tr>';
                 return;
             }
 
             if (!data.data || data.data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5">No products found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7">No products found.</td></tr>';
                 return;
             }
 
             adminProducts = data.data;
             renderProductsTable();
         } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="5">Server error. Please try again.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7">Server error. Please try again.</td></tr>';
         }
     }
 
@@ -1633,7 +1696,7 @@
         );
 
         if (products.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5">No products found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7">No products found.</td></tr>';
             return;
         }
 
@@ -1647,9 +1710,130 @@
                 '<td>' + escapeHtml(product.categoryName || '-') + '</td>' +
                 '<td>$' + Number(product.price).toLocaleString() + '</td>' +
                 '<td>' + product.quantity + '</td>' +
-                '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>';
+                '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>' +
+                '<td><button class="topbar-btn" onclick="openStockModal(' + product.id + ')">Add Stocks</button></td>' +
+                '<td><button class="topbar-btn" onclick="openEditProductModal(' + product.id + ')">Edit</button></td>';
             tbody.appendChild(row);
         });
+    }
+
+    function getAdminProduct(productId) {
+        return adminProducts.find(product => Number(product.id) === Number(productId));
+    }
+
+    function openStockModal(productId) {
+        const product = getAdminProduct(productId);
+        if (!product) return;
+
+        document.getElementById('stock-product-id').value = product.id;
+        document.getElementById('stock-product-title').textContent = product.title || '-';
+        document.getElementById('stock-product-description').textContent = product.description || '-';
+        document.getElementById('stock-product-price').textContent = 'Unit Price: $' + formatMoney(product.price || 0);
+        document.getElementById('stock-quantity').value = '';
+        document.getElementById('stock-modal-error').style.display = 'none';
+        document.getElementById('stock-modal-overlay').style.display = 'flex';
+    }
+
+    function closeStockModal() {
+        document.getElementById('stock-modal-overlay').style.display = 'none';
+    }
+
+    function showStockError(msg) {
+        const el = document.getElementById('stock-modal-error');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+
+    async function submitStock() {
+        const productId = document.getElementById('stock-product-id').value;
+        const quantity = Number(document.getElementById('stock-quantity').value);
+        const saveBtn = document.getElementById('save-stock-btn');
+
+        if (!quantity || quantity <= 0) return showStockError('Please enter a valid quantity.');
+
+        try {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'UPDATING...';
+            const response = await fetch('api/products/' + productId + '/stock', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ quantity: quantity })
+            });
+            const data = await response.json();
+
+            if (data.status) {
+                closeStockModal();
+                loadProducts();
+                loadDashboard();
+                alert('Stock updated successfully!');
+            } else {
+                showStockError(data.message || 'Failed to update stock.');
+            }
+        } catch (e) {
+            showStockError('Server error. Please try again.');
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'UPDATE STOCK';
+        }
+    }
+
+    function openEditProductModal(productId) {
+        const product = getAdminProduct(productId);
+        if (!product) return;
+
+        document.getElementById('edit-product-id').value = product.id;
+        document.getElementById('edit-product-title').value = product.title || '';
+        document.getElementById('edit-product-description').value = product.description || '';
+        document.getElementById('edit-product-price').value = product.price || '';
+        document.getElementById('edit-product-modal-error').style.display = 'none';
+        document.getElementById('edit-product-modal-overlay').style.display = 'flex';
+    }
+
+    function closeEditProductModal() {
+        document.getElementById('edit-product-modal-overlay').style.display = 'none';
+    }
+
+    function showEditProductError(msg) {
+        const el = document.getElementById('edit-product-modal-error');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+
+    async function submitProductDetails() {
+        const productId = document.getElementById('edit-product-id').value;
+        const title = document.getElementById('edit-product-title').value.trim();
+        const description = document.getElementById('edit-product-description').value.trim();
+        const price = document.getElementById('edit-product-price').value.trim();
+        const saveBtn = document.getElementById('save-edit-product-btn');
+
+        if (!title) return showEditProductError('Title is required.');
+        if (!description) return showEditProductError('Description is required.');
+        if (!price || isNaN(price) || Number(price) <= 0) return showEditProductError('Please enter a valid unit price.');
+
+        try {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'UPDATING...';
+            const response = await fetch('api/products/' + productId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: title, description: description, price: price })
+            });
+            const data = await response.json();
+
+            if (data.status) {
+                closeEditProductModal();
+                loadProducts();
+                loadDashboard();
+                alert('Product details updated successfully!');
+            } else {
+                showEditProductError(data.message || 'Failed to update product details.');
+            }
+        } catch (e) {
+            showEditProductError('Server error. Please try again.');
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'UPDATE DETAILS';
+        }
     }
 
     async function loadOrders() {

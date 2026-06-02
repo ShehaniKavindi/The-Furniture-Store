@@ -17,12 +17,12 @@
     <header-content></header-content>
 </header>
 
-<main class="profile-page"><br>
-    <section class="container profile-header-card ">
-        <div class="profile-avatar ">
+<main class="profile-page">
+    <section class="container profile-header-card">
+        <div class="profile-avatar">
             <span id="profileInitials">--</span>
         </div>
-        <div>
+        <div class="profile-identity">
             <p class="label">MY ACCOUNT</p>
             <h1 id="profileName">My Profile</h1>
             <p id="profileEmailText">Loading profile details...</p>
@@ -35,7 +35,7 @@
             <a href="#" class="active" onclick="showProfileSection('details', this); return false;">Profile Details</a>
             <a href="cart.html">My Cart</a>
             <a href="#" onclick="showProfileSection('orders', this); return false;">Orders</a>
-            <a href="login.html">Log Out</a>
+            <a href="#" onclick="openLogoutModal(); return false;">Log Out</a>
         </aside>
 
         <section class="profile-panel" id="profile-details-panel">
@@ -113,6 +113,18 @@
     </section>
 </main>
 
+<div class="logout-modal-overlay" id="logout-modal-overlay" style="display:none;">
+    <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-modal-title">
+        <button type="button" class="logout-modal-close" onclick="closeLogoutModal();" aria-label="Close logout confirmation">&times;</button>
+        <p class="label">LOG OUT</p>
+        <h2 id="logout-modal-title">Are you sure you want to log out?</h2>
+        <div class="logout-modal-actions">
+            <button type="button" class="logout-cancel-btn" onclick="closeLogoutModal();">Cancel</button>
+            <button type="button" class="logout-confirm-btn" id="logout-confirm-btn" onclick="confirmLogout();">Log Out</button>
+        </div>
+    </div>
+</div>
+
 <script src="assets/js/notification.js"></script>
 <script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
 <script>
@@ -128,8 +140,48 @@
             loadCities(this.value, '');
         });
 
+        document.getElementById('logout-modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLogoutModal();
+            }
+        });
+
         loadProfileDetails();
     });
+
+    function openLogoutModal() {
+        document.getElementById('logout-modal-overlay').style.display = 'grid';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logout-modal-overlay').style.display = 'none';
+    }
+
+    async function confirmLogout() {
+        const logoutBtn = document.getElementById('logout-confirm-btn');
+
+        try {
+            logoutBtn.disabled = true;
+            logoutBtn.textContent = 'Logging out...';
+
+            const response = await fetch('api/users/logout', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+
+            if (response.ok || response.redirected) {
+                window.location.href = 'login.html';
+            } else {
+                logoutBtn.disabled = false;
+                logoutBtn.textContent = 'Log Out';
+                showProfileMessage('Failed to log out. Please try again.', false);
+            }
+        } catch (e) {
+            logoutBtn.disabled = false;
+            logoutBtn.textContent = 'Log Out';
+            showProfileMessage('Failed to log out. Please try again.', false);
+        }
+    }
 
     function showPendingProfileToast() {
         const message = sessionStorage.getItem('profileToastMessage');
