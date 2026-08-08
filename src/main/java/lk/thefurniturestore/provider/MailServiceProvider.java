@@ -17,13 +17,22 @@ public class MailServiceProvider {
     private final BlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<>();
     private final Properties properties = new Properties();
     private static MailServiceProvider mailServiceProvider;
+    private final boolean enabled;
 
     private MailServiceProvider() {
+        String host = Env.get("mail.host");
+        String port = Env.get("mail.port");
+        enabled = host != null && !host.isBlank() && port != null && !port.isBlank();
+
+        if (!enabled) {
+            return;
+        }
+
         properties.put("mail.smtp.auth", true);
         properties.put("mail.smtp.starttls.enable", true);
-        properties.put("mail.smtp.starttls.required", true);   // chatgpt
-        properties.put("mail.smtp.host", Env.get("mail.host"));
-        properties.put("mail.smtp.port", Env.get("mail.port"));
+        properties.put("mail.smtp.starttls.required", true);
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", port);
 
     }
 
@@ -35,6 +44,11 @@ public class MailServiceProvider {
     }
 
     public void start() {
+        if (!enabled) {
+            System.out.println("Email service is disabled: configure MAIL_HOST and MAIL_PORT to enable email delivery.");
+            return;
+        }
+
         authenticator = new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -62,6 +76,9 @@ public class MailServiceProvider {
     }
 
     public void sendMail(Mailable mailable){
-        boolean offer = blockingQueue.offer(mailable);
+        if (executor == null) {
+            throw new IllegalStateException("Email service is not configured.");
+        }
+        blockingQueue.offer(mailable);
     }
 }

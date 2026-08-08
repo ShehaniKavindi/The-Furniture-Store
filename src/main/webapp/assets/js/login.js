@@ -31,7 +31,7 @@ async function login() {
                     data.message,
                     'Okay',
                     ()=> {
-                        window.location = "home.html"
+                        window.location = "index.html"
                     },
                 );
             } else {

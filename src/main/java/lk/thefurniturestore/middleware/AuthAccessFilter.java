@@ -34,7 +34,7 @@ public class AuthAccessFilter implements Filter {
         }
 
         if (httpSession != null && httpSession.getAttribute("user") != null) {
-            response.sendRedirect(request.getContextPath() + "/home.html");
+            response.sendRedirect(request.getContextPath() + "/index.html");
         } else {
             addNoCacheHeaders(response);
             filterChain.doFilter(servletRequest, servletResponse);

@@ -79,7 +79,7 @@ A Java 11 furniture e-commerce application with a Jersey REST API, Hibernate ORM
 6. Run `lk.thefurniturestore.Main` from your IDE. Then open:
 
    ```text
-   http://localhost:8080/thefurniturestore/home.html
+   http://localhost:8080/thefurniturestore/
    ```
 
 The application reads values from `.env` for local development. Operating-system environment variables take precedence and are recommended for deployment.

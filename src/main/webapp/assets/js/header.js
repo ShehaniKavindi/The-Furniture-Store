@@ -38,7 +38,7 @@ class HeaderContent extends HTMLElement{
                 
                 <div class="w-100 collapse navbar-collapse" id="navMenu">
                     <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
                         <li class="nav-item"><a class="nav-link header-category-link" href="shop.html" data-category-name="Signature Sofas">Signature Sofas</a></li>
                         <li class="nav-item"><a class="nav-link header-category-link" href="shop.html" data-category-name="Gather & Dine">Gather & Dine</a></li>
