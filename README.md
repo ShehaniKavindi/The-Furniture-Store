@@ -33,15 +33,30 @@ A Java 11 furniture e-commerce application with a Jersey REST API, Hibernate ORM
 
 ## Screenshots
 
-The screenshots will be added here once the app is running with a configured local database. The expected files are listed below so GitHub will render them automatically after capture.
-
-| Screen | File |
-|---|---|
-| Home page | `docs/screenshots/home.png` |
-| Search and filters | `docs/screenshots/search.png` |
-| Shopping cart | `docs/screenshots/cart.png` |
-| Product details / wishlist | `docs/screenshots/product-details.png` |
-| Admin reports | `docs/screenshots/admin-reports.png` |
+<table>
+  <tr>
+    <th>Home page</th>
+    <th>Search and filters</th>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/home.png" alt="Furniture Store home page" width="460"></td>
+    <td><img src="docs/screenshots/search.png" alt="Furniture Store product search and filters" width="460"></td>
+  </tr>
+  <tr>
+    <th>Shopping cart</th>
+    <th>Product details and wishlist</th>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/cart.png" alt="Furniture Store shopping cart" width="460"></td>
+    <td><img src="docs/screenshots/product-details.png" alt="Furniture Store product details and wishlist" width="460"></td>
+  </tr>
+  <tr>
+    <th colspan="2">Admin reports</th>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="docs/screenshots/admin-reports.png" alt="Furniture Store admin reports" width="600"></td>
+  </tr>
+</table>
 
 ## Technology stack
 
