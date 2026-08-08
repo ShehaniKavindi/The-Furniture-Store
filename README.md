@@ -31,33 +31,6 @@ A Java 11 furniture e-commerce application with a Jersey REST API, Hibernate ORM
 - Centralized JSON server-error handling plus custom 404 and 500 pages
 - JUnit 5 unit tests and documented manual test cases
 
-## Screenshots
-
-<table>
-  <tr>
-    <th>Home page</th>
-    <th>Search and filters</th>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/home.png" alt="Furniture Store home page" width="460"></td>
-    <td><img src="docs/screenshots/search.png" alt="Furniture Store product search and filters" width="460"></td>
-  </tr>
-  <tr>
-    <th>Shopping cart</th>
-    <th>Product details and wishlist</th>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/cart.png" alt="Furniture Store shopping cart" width="460"></td>
-    <td><img src="docs/screenshots/product-details.png" alt="Furniture Store product details and wishlist" width="460"></td>
-  </tr>
-  <tr>
-    <th colspan="2">Admin reports</th>
-  </tr>
-  <tr>
-    <td colspan="2" align="center"><img src="docs/screenshots/admin-reports.png" alt="Furniture Store admin reports" width="600"></td>
-  </tr>
-</table>
-
 ## Technology stack
 
 | Technology | Purpose | Version |
