@@ -1,61 +1,123 @@
-# 🛋️ The Furniture Store
+# The Furniture Store
 
-A full-featured Java-based e-commerce application for buying and selling furniture online. Built with a modern REST API architecture using Jersey (JAX-RS), Hibernate ORM, and MySQL database.
+A Java 11 furniture e-commerce application with a Jersey REST API, Hibernate ORM, MySQL, and an embedded Tomcat server. It supports a customer storefront and an administrator workspace for catalog, order, user, and reporting tasks.
 
-## 🎯 Overview
+## Highlights
 
-The Furniture Store is a comprehensive e-commerce platform that allows users to:
-- Browse and purchase furniture items
-- Manage shopping carts
-- Place and track orders
-- Manage user profiles and addresses
-- Administrators to manage products, categories, orders, and users
-- Advanced search and filtering capabilities
+### Customer experience
 
-The application features a robust REST API built with Jersey (JAX-RS), server-side session management, and secure payment integration with PayHere.
+- Account registration, email verification, login, logout, password reset, and optional secure remember-me login
+- Product browsing by category and product-detail pages
+- Advanced search with keywords, multiple categories, price range, availability filter, saved preferences, and pagination
+- Shopping cart with quantity updates and removal
+- Wishlist management
+- Checkout and PayHere payment integration
+- Order tracking, cancellation, profile management, and delivery-address management
 
-## ✨ Features
+### Administration
 
-### For Customers
-- **User Authentication**: Registration, login, email verification
-- **Product Browsing**: Browse products by category, view detailed product information
-- **Advanced Search**: Filter products by multiple criteria
-- **Shopping Cart**: Add, update, and remove items from cart
-- **Order Management**: Place orders, track order status, cancel orders
-- **User Profile**: Update personal information and delivery addresses
-- **Payment Integration**: Secure payment processing via PayHere
-- **Location Services**: Province, district, and city selection
+- Admin-only authentication and route protection
+- Dashboard, product and category management, user and admin management, and order-status updates
+- Product image uploads with type, size, and image-count validation
+- Inventory monitoring with a low-stock report
+- Sales-by-category report, CSV export, and pricing insight report
 
-### For Administrators
-- **Admin Authentication**: Secure admin login
-- **Dashboard**: View key metrics and analytics
-- **Product Management**: Add, update, and delete products with image uploads
-- **Category Management**: Manage product categories
-- **User Management**: View all customers, update customer status
-- **Admin Management**: Add new admins, block/deactivate admins
-- **Order Management**: View all orders, update order status
-- **Inventory Tracking**: Monitor product quantities
+### Engineering and security
 
-### General Features
-- **Responsive Design**: Modern web interface
-- **Session Management**: Secure session handling with HTTP sessions
-- **JSON Communication**: All API responses in JSON format
-- **Image Upload Support**: Product images stored in webapp assets
-- **Email Notifications**: Email template support for various events
-- **Role-Based Access Control**: Different permissions for users and admins
+- RESTful JSON API built with Jersey (JAX-RS)
+- Hibernate ORM using HQL, Criteria API, joins, aggregate projections, and subqueries
+- BCrypt password hashing, legacy-password migration on successful login, and signed HTTP-only remember-me cookies
+- Environment-based secrets: database, mail, PayHere, and cookie settings stay out of source control
+- Centralized JSON server-error handling plus custom 404 and 500 pages
+- JUnit 5 unit tests and documented manual test cases
 
-## 🛠️ Technology Stack
+## Screenshots
+
+The screenshots will be added here once the app is running with a configured local database. The expected files are listed below so GitHub will render them automatically after capture.
+
+| Screen | File |
+|---|---|
+| Home page | `docs/screenshots/home.png` |
+| Search and filters | `docs/screenshots/search.png` |
+| Shopping cart | `docs/screenshots/cart.png` |
+| Product details / wishlist | `docs/screenshots/product-details.png` |
+| Admin reports | `docs/screenshots/admin-reports.png` |
+
+## Technology stack
 
 | Technology | Purpose | Version |
 |---|---|---|
-| **Java** | Programming Language | 11 |
-| **Jersey (JAX-RS)** | REST API Framework | 3.1.2 |
-| **Hibernate ORM** | Database ORM | 6.1.7.Final |
-| **MySQL** | Database | - |
-| **MySQL Connector** | Database Driver | 9.0.0 |
-| **Jakarta Servlet** | Servlet API | 6.0.0 |
-| **Tomcat** | Web Server | 10.1.7 |
-| **GSON** | JSON Processing | 2.10.1 |
-| **Jakarta Mail** | Email Support | 2.0.2 |
-| **Maven** | Build Tool | - |
+| Java | Application language | 11 |
+| Jersey (JAX-RS) | REST API | 3.1.2 |
+| Hibernate ORM | Persistence and queries | 6.1.7.Final |
+| MySQL Connector/J | Database driver | 9.0.0 |
+| Embedded Tomcat | Web server | 10.1.7 |
+| Jakarta Servlet | Web API | 6.0.0 |
+| Gson | JSON serialization | 2.10.1 |
+| Jakarta Mail | Email support | 2.0.x |
+| jBCrypt | Password hashing | 0.4 |
+| JUnit Jupiter | Automated tests | 5.10.2 |
+| Maven Wrapper | Build and test tooling | Included |
 
+## Prerequisites
+
+- JDK 11 or newer
+- MySQL 8 or compatible MySQL server
+- IntelliJ IDEA (recommended) or another Java IDE
+
+## Local setup
+
+1. Clone the repository and open it as a Maven project.
+2. Create a local environment file from the safe template:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+3. Update `.env` with your local MySQL, SMTP, PayHere, and remember-me values. Do not commit this file.
+4. Create the database and load the supplied schema:
+
+   ```powershell
+   mysql -u <database_user> -p < database/schema.sql
+   ```
+
+5. Build and run the tests:
+
+   ```powershell
+   .\mvnw.cmd test
+   .\mvnw.cmd package
+   ```
+
+6. Run `lk.thefurniturestore.Main` from your IDE. Then open:
+
+   ```text
+   http://localhost:8080/thefurniturestore/home.html
+   ```
+
+The application reads values from `.env` for local development. Operating-system environment variables take precedence and are recommended for deployment.
+
+## Configuration
+
+| Variable | Purpose |
+|---|---|
+| `DB_URL` | JDBC connection URL |
+| `DB_USERNAME` / `DB_PASSWORD` | MySQL credentials |
+| `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `APP_MAIL` | Outbound email settings |
+| `PAYHERE_MERCHANT_ID` / `PAYHERE_MERCHANT_SECRET` | PayHere credentials |
+| `APP_REMEMBER_ME_SECRET` | Long random secret used to sign remember-me cookies |
+
+Use `.env.example` as the complete template. Keep production secrets in your deployment environment or secret manager.
+
+## Project documentation
+
+- [Database schema](database/schema.sql)
+- [Entity-relationship diagram](database/erd.md)
+- [Manual test cases](testing/manual-test-cases.md)
+
+## Build output
+
+`mvn package` produces the WAR artifact in `target/`. The embedded-server entry point is `lk.thefurniturestore.Main`.
+
+## License
+
+This project was created for academic use.
