@@ -22,9 +22,13 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Set;
 
 @Path("/products")
 public class ProductController {
+    private static final int MAX_IMAGES = 5;
+    private static final long MAX_IMAGE_SIZE = 5L * 1024 * 1024;
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp");
 
     @POST
     @IsAdmin
@@ -50,6 +54,13 @@ public class ProductController {
         List<String> savedImagePaths = new ArrayList<>();
         List<FormDataBodyPart> imageParts = multiPart.getFields("images");
 
+        String validationError = validateImages(imageParts);
+        if (validationError != null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"status\":false,\"message\":\"" + validationError + "\"}")
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+
         if (imageParts != null && !imageParts.isEmpty()) {
             // Save to webapp/assets/images/products/
             String uploadDir = request.getServletContext().getRealPath("/assets/images/products");
@@ -57,8 +68,7 @@ public class ProductController {
             if (!dir.exists()) dir.mkdirs();
 
             for (FormDataBodyPart part : imageParts) {
-                try {
-                    InputStream inputStream = part.getValueAs(InputStream.class);
+                try (InputStream inputStream = part.getValueAs(InputStream.class)) {
                     String originalName = part.getContentDisposition().getFileName();
                     String ext = FilenameUtils.getExtension(originalName);
                     String fileName = UUID.randomUUID().toString() + "." + ext;
@@ -89,6 +99,19 @@ public class ProductController {
     public Response deleteProduct(@PathParam("id") int id) {
         String responseJson = new ProductService().deleteProduct(id);
         return Response.ok().entity(responseJson).build();
+    }
+
+    private String validateImages(List<FormDataBodyPart> imageParts) {
+        if (imageParts == null) return null;
+        if (imageParts.size() > MAX_IMAGES) return "You can upload a maximum of five images.";
+        for (FormDataBodyPart part : imageParts) {
+            String fileName = part.getContentDisposition().getFileName();
+            String extension = FilenameUtils.getExtension(fileName).toLowerCase();
+            if (!ALLOWED_EXTENSIONS.contains(extension)) return "Only JPG, PNG, and WebP image files are allowed.";
+            if (part.getContentDisposition().getSize() > MAX_IMAGE_SIZE) return "Each image must be 5 MB or smaller.";
+            if (part.getMediaType() == null || !part.getMediaType().getType().equalsIgnoreCase("image")) return "Invalid image content type.";
+        }
+        return null;
     }
 
     @PUT

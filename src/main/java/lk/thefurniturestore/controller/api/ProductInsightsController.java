@@ -28,4 +28,12 @@ public class ProductInsightsController {
     @GET
     @Path("/above-category-average")
     public Response aboveCategoryAverage() { return Response.ok(insightsService.getAboveCategoryAverageProducts()).build(); }
+
+    @GET
+    @Path("/category-sales.csv")
+    @Produces("text/csv")
+    public Response exportCategorySales() {
+        return Response.ok(insightsService.getCategorySalesCsv())
+                .header("Content-Disposition", "attachment; filename=category-sales-report.csv").build();
+    }
 }

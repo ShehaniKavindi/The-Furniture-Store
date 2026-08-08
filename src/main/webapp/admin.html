@@ -552,6 +552,7 @@
             </svg>
             Dashboard
         </div>
+        <div class="nav-item" onclick="navigate(this, 'reports')">Reports</div>
 
         <div class="nav-section-label">Manage</div>
 
@@ -776,6 +777,18 @@
                         <div class="product-price">$62,000</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- REPORTS PAGE -->
+        <div class="page" id="page-reports">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-label">Low Stock Products</div><div class="stat-value" id="report-low-stock-count">0</div><div class="stat-sub"><span class="down">requires attention</span></div></div>
+                <div class="stat-card"><div class="stat-label">Above Category Average</div><div class="stat-value" id="report-price-insight-count">0</div><div class="stat-sub"><span class="up">pricing insight</span></div></div>
+            </div>
+            <div class="grid-2">
+                <div class="panel"><div class="panel-header"><span class="panel-title">Category Sales</span><button class="topbar-btn" onclick="exportCategorySales()">Export CSV</button></div><div class="table-wrap"><table><thead><tr><th>Category</th><th>Ordered items</th><th>Sales value</th></tr></thead><tbody id="report-category-sales"><tr><td colspan="3">Loading report...</td></tr></tbody></table></div></div>
+                <div class="panel"><div class="panel-header"><span class="panel-title">Low Stock Projection</span></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Category</th><th>Stock</th></tr></thead><tbody id="report-low-stock"><tr><td colspan="3">Loading report...</td></tr></tbody></table></div></div>
             </div>
         </div>
 
@@ -1061,6 +1074,7 @@
 
     const pages = {
         dashboard: { title: 'Dashboard',   sub: 'OVERVIEW — MAY 2026',    primary: '+ Add Product', secondary: 'Export' },
+        reports:    { title: 'Reports',     sub: 'BUSINESS INTELLIGENCE',   primary: '',             secondary: '' },
         orders:     { title: 'Orders',      sub: 'ALL ORDERS',              primary: '',             secondary: 'Export' },
         products:   { title: 'Products',    sub: 'PRODUCT CATALOGUE',       primary: '+ Add Product', secondary: 'Export' },
         customers:  { title: 'Customers',   sub: 'ALL CUSTOMERS',           primary: '',             secondary: 'Export' },
@@ -1101,8 +1115,28 @@
             loadAdmins();
         } else if (page === 'dashboard') {
             loadDashboard();
+        } else if (page === 'reports') {
+            loadReports();
         }
     }
+
+    async function loadReports() {
+        try {
+            const [salesResponse, stockResponse, priceResponse] = await Promise.all([
+                fetch('api/insights/category-sales'), fetch('api/insights/low-stock?threshold=3'), fetch('api/insights/above-category-average')
+            ]);
+            const [sales, stock, price] = await Promise.all([salesResponse.json(), stockResponse.json(), priceResponse.json()]);
+            document.getElementById('report-low-stock-count').textContent = (stock.data || []).length;
+            document.getElementById('report-price-insight-count').textContent = (price.data || []).length;
+            document.getElementById('report-category-sales').innerHTML = (sales.data || []).map(item => '<tr><td>' + item.categoryName + '</td><td>' + item.orderedItemCount + '</td><td>$' + formatMoney(item.salesValue) + '</td></tr>').join('') || '<tr><td colspan="3">No sales data available.</td></tr>';
+            document.getElementById('report-low-stock').innerHTML = (stock.data || []).map(item => '<tr><td>' + item.title + '</td><td>' + (item.categoryName || '-') + '</td><td>' + item.quantity + '</td></tr>').join('') || '<tr><td colspan="3">No low-stock products.</td></tr>';
+        } catch (error) {
+            document.getElementById('report-category-sales').innerHTML = '<tr><td colspan="3">Unable to load reports.</td></tr>';
+            document.getElementById('report-low-stock').innerHTML = '<tr><td colspan="3">Unable to load reports.</td></tr>';
+        }
+    }
+
+    function exportCategorySales() { window.location.assign('api/insights/category-sales.csv'); }
 
     function isSuperAdmin() {
         return currentAdmin && String(currentAdmin.roleName || '').toLowerCase() === 'super admin';

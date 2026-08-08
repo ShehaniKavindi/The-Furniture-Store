@@ -103,4 +103,19 @@ public class ProductInsightsService {
         }
         return AppUtil.GSON.toJson(response);
     }
+
+    public String getCategorySalesCsv() {
+        StringBuilder csv = new StringBuilder("Category,Ordered Items,Sales Value\n");
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            List<Object[]> rows = session.createQuery(
+                    "SELECT c.name, COUNT(oi.id), COALESCE(SUM(p.price), 0) "
+                            + "FROM OrderdItems oi JOIN oi.product p JOIN p.category c "
+                            + "GROUP BY c.id, c.name ORDER BY SUM(p.price) DESC", Object[].class).list();
+            for (Object[] row : rows) {
+                csv.append('"').append(String.valueOf(row[0]).replace("\"", "\"\"")).append("\",")
+                        .append(row[1]).append(',').append(row[2]).append('\n');
+            }
+        }
+        return csv.toString();
+    }
 }
