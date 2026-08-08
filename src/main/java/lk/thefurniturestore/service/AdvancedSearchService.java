@@ -1,6 +1,7 @@
 package lk.thefurniturestore.service;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import lk.thefurniturestore.dto.SearchResponseDTO;
 import lk.thefurniturestore.entity.Product;
 import lk.thefurniturestore.util.AppUtil;
@@ -24,19 +25,35 @@ public class AdvancedSearchService {
 
         String keyword = getString(requestObject, "keyword").trim().toLowerCase();
         int categoryId = getInt(requestObject, "categoryId");
+        List<Integer> categoryIds = getIntList(requestObject, "categoryIds");
+        if (categoryIds.isEmpty() && categoryId > 0) categoryIds.add(categoryId);
         String sort = getString(requestObject, "sort");
+        double minPrice = getDouble(requestObject, "minPrice");
+        double maxPrice = getDouble(requestObject, "maxPrice");
+        boolean inStockOnly = getBoolean(requestObject, "inStockOnly");
+        int page = Math.max(1, getInt(requestObject, "page"));
+        int pageSize = getInt(requestObject, "pageSize");
+        pageSize = pageSize <= 0 ? 12 : Math.min(pageSize, 48);
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            StringBuilder hql = new StringBuilder("FROM Product p LEFT JOIN FETCH p.category WHERE 1 = 1");
+            StringBuilder conditions = new StringBuilder(" WHERE 1 = 1");
 
             if (!keyword.isBlank()) {
-                hql.append(" AND (LOWER(p.title) LIKE :keyword OR LOWER(p.description) LIKE :keyword)");
+                conditions.append(" AND (LOWER(p.title) LIKE :keyword OR LOWER(p.description) LIKE :keyword)");
             }
 
-            if (categoryId > 0) {
-                hql.append(" AND p.category.id = :categoryId");
+            if (!categoryIds.isEmpty()) {
+                conditions.append(" AND p.category.id IN :categoryIds");
             }
+            if (minPrice > 0) conditions.append(" AND p.price >= :minPrice");
+            if (maxPrice > 0) conditions.append(" AND p.price <= :maxPrice");
+            if (inStockOnly) conditions.append(" AND p.quantity > 0");
+
+            long totalItems = session.createQuery("SELECT COUNT(p.id) FROM Product p" + conditions, Long.class)
+                    .setProperties(parameters(keyword, categoryIds, minPrice, maxPrice)).getSingleResult();
+
+            StringBuilder hql = new StringBuilder("FROM Product p LEFT JOIN FETCH p.category").append(conditions);
 
             if ("price-asc".equals(sort)) {
                 hql.append(" ORDER BY p.price ASC");
@@ -47,14 +64,9 @@ public class AdvancedSearchService {
             }
 
             Query<Product> query = session.createQuery(hql.toString(), Product.class);
-
-            if (!keyword.isBlank()) {
-                query.setParameter("keyword", "%" + keyword + "%");
-            }
-
-            if (categoryId > 0) {
-                query.setParameter("categoryId", categoryId);
-            }
+            query.setProperties(parameters(keyword, categoryIds, minPrice, maxPrice));
+            query.setFirstResult((page - 1) * pageSize);
+            query.setMaxResults(pageSize);
 
             List<SearchResponseDTO> products = new ArrayList<>();
             for (Product product : query.list()) {
@@ -63,7 +75,10 @@ public class AdvancedSearchService {
 
             responseObject.addProperty("status", true);
             responseObject.addProperty("message", "Products fetched successfully!");
-            responseObject.addProperty("count", products.size());
+            responseObject.addProperty("count", totalItems);
+            responseObject.addProperty("currentPage", page);
+            responseObject.addProperty("pageSize", pageSize);
+            responseObject.addProperty("totalPages", (int) Math.ceil((double) totalItems / pageSize));
             responseObject.add("data", AppUtil.GSON.toJsonTree(products));
         } catch (Exception e) {
             responseObject.addProperty("status", false);
@@ -113,5 +128,34 @@ public class AdvancedSearchService {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    private double getDouble(JsonObject requestObject, String key) {
+        try { return requestObject != null && requestObject.has(key) ? Math.max(0, requestObject.get(key).getAsDouble()) : 0; }
+        catch (Exception ignored) { return 0; }
+    }
+
+    private boolean getBoolean(JsonObject requestObject, String key) {
+        return requestObject != null && requestObject.has(key) && requestObject.get(key).getAsBoolean();
+    }
+
+    private List<Integer> getIntList(JsonObject requestObject, String key) {
+        List<Integer> values = new ArrayList<>();
+        if (requestObject == null || !requestObject.has(key) || !requestObject.get(key).isJsonArray()) return values;
+        JsonArray array = requestObject.getAsJsonArray(key);
+        for (int i = 0; i < array.size(); i++) {
+            try { int value = array.get(i).getAsInt(); if (value > 0) values.add(value); }
+            catch (Exception ignored) { }
+        }
+        return values;
+    }
+
+    private java.util.Map<String, Object> parameters(String keyword, List<Integer> categoryIds, double minPrice, double maxPrice) {
+        java.util.Map<String, Object> values = new java.util.HashMap<>();
+        if (!keyword.isBlank()) values.put("keyword", "%" + keyword + "%");
+        if (!categoryIds.isEmpty()) values.put("categoryIds", categoryIds);
+        if (minPrice > 0) values.put("minPrice", minPrice);
+        if (maxPrice > 0) values.put("maxPrice", maxPrice);
+        return values;
     }
 }

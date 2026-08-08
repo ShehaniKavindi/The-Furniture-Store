@@ -9,6 +9,7 @@ public class UserDTO implements Serializable {
     private String email;
     private String password;
     private String verificationCode;
+    private boolean rememberMe;
 
     private String line1;
     private String line2;
@@ -85,6 +86,14 @@ public class UserDTO implements Serializable {
 
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
+    }
+
+    public boolean isRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
     }
 
     public int getCityId() {

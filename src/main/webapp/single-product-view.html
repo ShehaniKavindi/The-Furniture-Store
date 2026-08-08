@@ -37,6 +37,7 @@
         </p>
         <input type="number" class="col-11 product-qty" name="" id="product-qty" value="1" min="1">
         <button class="col-11 add-cart-btn" onclick="addToCart();">Add to your Cart</button>
+        <button class="col-11 add-cart-btn mt-2" type="button" onclick="addToWishlist();">Save to Wishlist</button>
 
     </div>
 </section>
@@ -133,6 +134,17 @@
         }
     }
 
+    async function addToWishlist() {
+        if (!selectedProductId) return;
+        try {
+            const response = await fetch('api/wishlist/' + selectedProductId, { method: 'POST' });
+            const data = await response.json();
+            showCartMessage(data.message, data.status);
+        } catch (e) {
+            showCartMessage('Please login to save products.', false);
+        }
+    }
+
     function showCartMessage(message, status) {
         if (window.Notiflix) {
             if (status) {
@@ -168,4 +180,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lk.thefurniturestore.dto.ProductDTO;
+import lk.thefurniturestore.annotation.IsAdmin;
 import lk.thefurniturestore.service.ProductService;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class ProductController {
 
     @POST
+    @IsAdmin
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addProduct(
@@ -81,6 +83,7 @@ public class ProductController {
     }
 
     @DELETE
+    @IsAdmin
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteProduct(@PathParam("id") int id) {
@@ -89,6 +92,7 @@ public class ProductController {
     }
 
     @PUT
+    @IsAdmin
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -98,6 +102,7 @@ public class ProductController {
     }
 
     @PUT
+    @IsAdmin
     @Path("/{id}/stock")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -132,6 +137,7 @@ public class ProductController {
 
     @POST
     @Path("/categories")
+    @IsAdmin
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addCategory(String jsonData) {

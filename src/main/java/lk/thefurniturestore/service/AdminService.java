@@ -15,6 +15,7 @@ import lk.thefurniturestore.entity.Status;
 import lk.thefurniturestore.entity.User;
 import lk.thefurniturestore.util.AppUtil;
 import lk.thefurniturestore.util.HibernateUtil;
+import lk.thefurniturestore.util.PasswordUtil;
 import lk.thefurniturestore.validation.Validator;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -49,12 +50,19 @@ public class AdminService {
 
                 if (admin == null) {
                     message = "Admin account not found!";
-                } else if (!admin.getPassword().equals(adminDTO.getPassword())) {
+                } else if (!PasswordUtil.matches(adminDTO.getPassword(), admin.getPassword())) {
                     message = "Something went wrong. Please check your login credentials!";
                 } else if (!canAdminLogin(admin)) {
                     message = "Your admin account is not approved. Please contact the super admin!";
                 } else {
+                    if (PasswordUtil.needsUpgrade(admin.getPassword())) {
+                        Transaction transaction = hibernateSession.beginTransaction();
+                        admin.setPassword(PasswordUtil.hash(adminDTO.getPassword()));
+                        hibernateSession.merge(admin);
+                        transaction.commit();
+                    }
                     HttpSession httpSession = request.getSession();
+                    request.changeSessionId();
                     httpSession.setAttribute("admin", admin);
                     status = true;
                     message = "Admin login successful!";
@@ -294,8 +302,8 @@ public class AdminService {
             message = "Please enter a valid email!";
         } else if (adminDTO.getPassword() == null || adminDTO.getPassword().isBlank()) {
             message = "Password is required!";
-        } else if (adminDTO.getPassword().length() > 10) {
-            message = "Password cannot be longer than 10 characters!";
+        } else if (!adminDTO.getPassword().matches(Validator.PASSWORD_VALIDATION)) {
+            message = "Password must be at least 10 characters and include uppercase, lowercase, digit and special character.";
         } else if (adminDTO.getRoleId() <= 0) {
             message = "Role is required!";
         } else {
@@ -322,7 +330,7 @@ public class AdminService {
                         Admin admin = new Admin();
                         admin.setUsername(adminDTO.getUsername().trim());
                         admin.setEmail(adminDTO.getEmail().trim());
-                        admin.setPassword(adminDTO.getPassword());
+                        admin.setPassword(PasswordUtil.hash(adminDTO.getPassword()));
                         admin.setRole(role);
                         admin.setStatus(approvedStatus);
 

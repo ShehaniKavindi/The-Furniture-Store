@@ -32,11 +32,12 @@
                 </select>
             </div>
             <div class="search-filter-field">
-                <label for="search-category">Category</label>
-                <select id="search-category" onchange="searchProducts();">
-                    <option value="0">All categories</option>
-                </select>
+                <label for="search-category">Categories</label>
+                <select id="search-category" onchange="searchProducts();" multiple size="3"></select>
             </div>
+            <div class="search-filter-field"><label for="search-min-price">Min price</label><input type="number" id="search-min-price" min="0" onchange="searchProducts();"></div>
+            <div class="search-filter-field"><label for="search-max-price">Max price</label><input type="number" id="search-max-price" min="0" onchange="searchProducts();"></div>
+            <div class="search-filter-field"><label><input type="checkbox" id="search-in-stock" onchange="searchProducts();"> In stock only</label></div>
         </div>
     </section>
 
@@ -46,6 +47,7 @@
             <span id="search-result-count">0 products</span>
         </div>
         <div class="products search-products" id="search-products"></div>
+        <div class="d-flex gap-2 justify-content-center mt-4" id="search-pagination"></div>
     </section>
 </main>
 
@@ -60,8 +62,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        loadCategories();
-        loadAllProducts();
+        restoreSearchPreferences();
+        loadCategories().then(() => searchProducts(1));
 
         document.getElementById('search-keyword').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
@@ -86,33 +88,31 @@
                 option.textContent = category.name;
                 categorySelect.appendChild(option);
             });
+            const savedValues = (categorySelect.dataset.savedValue || '').split(',');
+            Array.from(categorySelect.options).forEach(option => option.selected = savedValues.includes(option.value));
         } catch (e) {
             showSearchMessage('Failed to load categories.', false);
         }
     }
 
-    async function loadAllProducts() {
-        const productContainer = document.getElementById('search-products');
-        productContainer.innerHTML = '<div class="search-status">Loading products...</div>';
-
-        try {
-            const response = await fetch('api/advanced-search/all-data');
-            const data = await response.json();
-            renderProducts(data);
-        } catch (e) {
-            productContainer.innerHTML = '<div class="search-status">Server error. Please try again.</div>';
-        }
-    }
-
-    async function searchProducts() {
+    async function searchProducts(page) {
         const productContainer = document.getElementById('search-products');
         productContainer.innerHTML = '<div class="search-status">Searching products...</div>';
 
         const payload = {
             keyword: document.getElementById('search-keyword').value,
             sort: document.getElementById('search-sort').value,
-            categoryId: Number(document.getElementById('search-category').value)
+            categoryIds: Array.from(document.getElementById('search-category').selectedOptions).map(option => Number(option.value)),
+            minPrice: Number(document.getElementById('search-min-price').value),
+            maxPrice: Number(document.getElementById('search-max-price').value),
+            inStockOnly: document.getElementById('search-in-stock').checked,
+            page: page || 1,
+            pageSize: 12
         };
+        localStorage.setItem('tfs-search-preferences', JSON.stringify({
+            keyword: payload.keyword, sort: payload.sort, categoryIds: payload.categoryIds,
+            minPrice: payload.minPrice || '', maxPrice: payload.maxPrice || '', inStockOnly: payload.inStockOnly
+        }));
 
         try {
             const response = await fetch('api/advanced-search/search-data', {
@@ -140,7 +140,7 @@
         }
 
         const products = data.data || [];
-        resultCount.textContent = products.length + (products.length === 1 ? ' product' : ' products');
+        resultCount.textContent = (data.count || 0) + ((data.count || 0) === 1 ? ' product' : ' products');
 
         if (products.length === 0) {
             productContainer.innerHTML = '<div class="search-status">No products found.</div>';
@@ -149,6 +149,33 @@
 
         productContainer.innerHTML = '';
         products.forEach(product => productContainer.appendChild(createSearchProductCard(product)));
+        renderPagination(data.currentPage || 1, data.totalPages || 0);
+    }
+
+    function renderPagination(currentPage, totalPages) {
+        const container = document.getElementById('search-pagination');
+        container.innerHTML = '';
+        if (totalPages <= 1) return;
+        const addButton = (label, page, disabled) => {
+            const button = document.createElement('button');
+            button.type = 'button'; button.className = 'btn btn-outline-dark'; button.textContent = label; button.disabled = disabled;
+            button.onclick = () => searchProducts(page); container.appendChild(button);
+        };
+        addButton('Previous', currentPage - 1, currentPage === 1);
+        for (let page = Math.max(1, currentPage - 2); page <= Math.min(totalPages, currentPage + 2); page++) addButton(String(page), page, page === currentPage);
+        addButton('Next', currentPage + 1, currentPage === totalPages);
+    }
+
+    function restoreSearchPreferences() {
+        try {
+            const preferences = JSON.parse(localStorage.getItem('tfs-search-preferences') || '{}');
+            document.getElementById('search-keyword').value = preferences.keyword || '';
+            document.getElementById('search-sort').value = preferences.sort || 'recent';
+            document.getElementById('search-min-price').value = preferences.minPrice || '';
+            document.getElementById('search-max-price').value = preferences.maxPrice || '';
+            document.getElementById('search-in-stock').checked = Boolean(preferences.inStockOnly);
+            document.getElementById('search-category').dataset.savedValue = (preferences.categoryIds || []).join(',');
+        } catch (e) { localStorage.removeItem('tfs-search-preferences'); }
     }
 
     function createSearchProductCard(product) {

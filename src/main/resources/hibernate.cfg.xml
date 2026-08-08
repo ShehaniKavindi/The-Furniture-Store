@@ -4,12 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-      <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
       <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-      <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/thefurniturestore?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;connectionCollation=utf8mb4_unicode_ci</property>
-      <property name="hibernate.connection.username">root</property>
-      <property name="hibernate.connection.password">06dracilla28?</property>
-      <property name="hibernate.hbm2ddl.auto">update</property>
       <property name="hibernate.show_sql">true</property>
 
         <mapping class="lk.thefurniturestore.entity.Address"/>
@@ -28,6 +23,7 @@
         <mapping class="lk.thefurniturestore.entity.Role"/>
         <mapping class="lk.thefurniturestore.entity.Status"/>
         <mapping class="lk.thefurniturestore.entity.User"/>
+        <mapping class="lk.thefurniturestore.entity.Wishlist"/>
 
     </session-factory>
 </hibernate-configuration>

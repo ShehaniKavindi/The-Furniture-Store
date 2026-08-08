@@ -17,11 +17,12 @@ public class UserController {
     @IsUser
     @Path("/logout")
     @GET
-    public Response logout(@Context HttpServletRequest request) {
+    public Response logout(@Context HttpServletRequest request, @Context jakarta.servlet.http.HttpServletResponse response) {
 
         HttpSession httpSession = request.getSession(false);
         if (httpSession != null && httpSession.getAttribute("user") != null) {
             httpSession.invalidate();
+            lk.thefurniturestore.util.RememberMeUtil.clear(request, response);
             return Response.status(Response.Status.OK).build();
         } else {
             System.out.println("else");
@@ -42,9 +43,9 @@ public class UserController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response userLogin(String jsonData, @Context HttpServletRequest request) {
+    public Response userLogin(String jsonData, @Context HttpServletRequest request, @Context jakarta.servlet.http.HttpServletResponse response) {
         UserDTO userDTO = AppUtil.GSON.fromJson(jsonData, UserDTO.class);
-        String responseJson = new UserService().userLogin(userDTO, request);
+        String responseJson = new UserService().userLogin(userDTO, request, response);
         // manage session cart and db cart
 //        new CartService().mergeUserCarts(request);
         return Response.ok().entity(responseJson).build();
@@ -57,6 +58,16 @@ public class UserController {
     public Response forgotPassword(String jsonData) {
         UserDTO userDTO = AppUtil.GSON.fromJson(jsonData, UserDTO.class);
         String responseJson = new UserService().forgotPassword(userDTO);
+        return Response.ok().entity(responseJson).build();
+    }
+
+    @Path("/reset-password")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resetPassword(String jsonData) {
+        UserDTO userDTO = AppUtil.GSON.fromJson(jsonData, UserDTO.class);
+        String responseJson = new UserService().resetPassword(userDTO);
         return Response.ok().entity(responseJson).build();
     }
 

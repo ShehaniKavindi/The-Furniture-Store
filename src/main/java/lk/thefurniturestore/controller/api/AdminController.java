@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lk.thefurniturestore.dto.AdminDTO;
+import lk.thefurniturestore.annotation.IsAdmin;
 import lk.thefurniturestore.service.AdminService;
 import lk.thefurniturestore.util.AppUtil;
 
@@ -30,6 +31,7 @@ public class AdminController {
 
     @Path("/profile")
     @GET
+    @IsAdmin
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAdminProfile(@Context HttpServletRequest request) {
         String responseJson = new AdminService().getAdminProfile(request);
@@ -38,6 +40,7 @@ public class AdminController {
 
     @Path("/dashboard")
     @GET
+    @IsAdmin
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDashboard(@Context HttpServletRequest request) {
         String responseJson = new AdminService().getDashboard(request);
@@ -45,6 +48,7 @@ public class AdminController {
     }
 
     @GET
+    @IsAdmin
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllAdmins(@Context HttpServletRequest request) {
         String responseJson = new AdminService().getAllAdmins(request);
@@ -53,6 +57,7 @@ public class AdminController {
 
     @Path("/customers")
     @GET
+    @IsAdmin
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllCustomers(@Context HttpServletRequest request) {
         String responseJson = new AdminService().getAllCustomers(request);
@@ -61,6 +66,7 @@ public class AdminController {
 
     @Path("/customers/{id}/status")
     @PUT
+    @IsAdmin
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCustomerStatus(@PathParam("id") int customerId, String jsonData, @Context HttpServletRequest request) {
@@ -69,6 +75,7 @@ public class AdminController {
     }
 
     @POST
+    @IsAdmin
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addAdmin(String jsonData, @Context HttpServletRequest request) {
@@ -79,6 +86,7 @@ public class AdminController {
 
     @Path("/{id}/block")
     @PUT
+    @IsAdmin
     @Produces(MediaType.APPLICATION_JSON)
     public Response blockAdmin(@PathParam("id") int adminId, @Context HttpServletRequest request) {
         String responseJson = new AdminService().blockAdmin(adminId, request);

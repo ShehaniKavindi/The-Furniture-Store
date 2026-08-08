@@ -28,7 +28,7 @@ public class Admin implements Serializable {
     @Column(nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 60)
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)

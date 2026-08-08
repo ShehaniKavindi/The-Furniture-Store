@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import lk.thefurniturestore.annotation.IsUser;
+import lk.thefurniturestore.util.RememberMeUtil;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,7 +26,8 @@ public class AuthFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
         HttpSession httpSession = request.getSession(false);
 
-        if (httpSession == null || httpSession.getAttribute("user") == null) {
+        if ((httpSession == null || httpSession.getAttribute("user") == null)
+                && !RememberMeUtil.restoreUserSession(request)) {
             containerRequestContext.abortWith(
                     Response.status(Response.Status.TEMPORARY_REDIRECT)
                             .location(URI.create(request.getContextPath() + "/login.html"))

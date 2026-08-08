@@ -20,6 +20,7 @@ class HeaderContent extends HTMLElement{
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </a>
+                        <a class="header-action-btn" href="wishlist.html" aria-label="Open wishlist" title="Wishlist">♡</a>
                         <a class="header-action-btn header-cart-btn" href="cart.html" aria-label="Open cart" title="Cart">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <circle cx="9" cy="20" r="1.5"></circle>

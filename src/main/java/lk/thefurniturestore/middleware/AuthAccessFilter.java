@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import lk.thefurniturestore.util.RememberMeUtil;
 
 public class AuthAccessFilter implements Filter {
     @Override
@@ -18,6 +19,7 @@ public class AuthAccessFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+        RememberMeUtil.restoreUserSession(request);
         HttpSession httpSession = request.getSession(false);
         String requestUri = request.getRequestURI();
 

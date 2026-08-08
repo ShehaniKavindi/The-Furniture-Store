@@ -3,6 +3,7 @@ package lk.thefurniturestore.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.core.Context;
 import lk.thefurniturestore.dto.UserDTO;
@@ -17,6 +18,8 @@ import lk.thefurniturestore.mail.VerificationMail;
 import lk.thefurniturestore.provider.MailServiceProvider;
 import lk.thefurniturestore.util.AppUtil;
 import lk.thefurniturestore.util.HibernateUtil;
+import lk.thefurniturestore.util.PasswordUtil;
+import lk.thefurniturestore.util.RememberMeUtil;
 import lk.thefurniturestore.validation.Validator;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -26,7 +29,7 @@ import java.util.List;
 
 public class UserService {
 
-    public String userLogin(UserDTO userDTO, @Context HttpServletRequest request) {
+    public String userLogin(UserDTO userDTO, @Context HttpServletRequest request, HttpServletResponse response) {
         JsonObject responseObject = new JsonObject();
         boolean status = false;
         String message = "";
@@ -50,7 +53,7 @@ public class UserService {
             if (singleUser == null){
                 message = "User not found! Please register first!";
             }else {
-                if (!singleUser.getPassword().equals(userDTO.getPassword())) {
+                if (!PasswordUtil.matches(userDTO.getPassword(), singleUser.getPassword())) {
                     message = "Something went wrong. Please check your login credentials!";
                 }else {
                     Status verifiedStatus = hibernateSession.createNamedQuery("Status.findByValue", Status.class)
@@ -59,8 +62,18 @@ public class UserService {
                     if (!singleUser.getStatus().equals(verifiedStatus)) {
                         message = "Your account is not verified. Please verify first!";
                     }else {
-                        HttpSession httpSession = request.getSession();
+                        if (PasswordUtil.needsUpgrade(singleUser.getPassword())) {
+                            Transaction transaction = hibernateSession.beginTransaction();
+                            singleUser.setPassword(PasswordUtil.hash(userDTO.getPassword()));
+                            hibernateSession.merge(singleUser);
+                            transaction.commit();
+                        }
+                        HttpSession httpSession = request.getSession(true);
+                        request.changeSessionId();
                         httpSession.setAttribute("user", singleUser);
+                        if (userDTO.isRememberMe()) {
+                            RememberMeUtil.issue(request, response, singleUser);
+                        }
                         status = true;
                         message = "Login Successful!";
                     }
@@ -156,16 +169,63 @@ public class UserService {
                 if (user == null) {
                     message = "email is not found";
                 } else {
-                    ForgotPasswordMail forgotPasswordMail = new ForgotPasswordMail(user.getEmail(), user.getPassword());
+                    String resetCode = AppUtil.generateCode();
+                    Transaction transaction = hibernateSession.beginTransaction();
+                    user.setVerificationCode(resetCode);
+                    hibernateSession.merge(user);
+                    transaction.commit();
+                    ForgotPasswordMail forgotPasswordMail = new ForgotPasswordMail(user.getEmail(), resetCode);
                     MailServiceProvider.getInstance().sendMail(forgotPasswordMail);
                     status = true;
-                    message = "Password has been sent to your email.";
+                    message = "A password reset code has been sent to your email.";
                 }
             } catch (Exception e) {
                 message = "Failed to send password email. Please try again.";
                 e.printStackTrace();
             } finally {
                 hibernateSession.close();
+            }
+        }
+
+        responseObject.addProperty("status", status);
+        responseObject.addProperty("message", message);
+        return AppUtil.GSON.toJson(responseObject);
+    }
+
+    public String resetPassword(UserDTO userDTO) {
+        JsonObject responseObject = new JsonObject();
+        boolean status = false;
+        String message;
+
+        if (userDTO == null || userDTO.getEmail() == null || !userDTO.getEmail().matches(Validator.EMAIL_VALIDATION)) {
+            message = "Please enter a valid email address.";
+        } else if (userDTO.getVerificationCode() == null || !userDTO.getVerificationCode().matches(Validator.VERIFICATION_CODE_VALIDATION)) {
+            message = "Please enter the six-digit reset code.";
+        } else if (userDTO.getPassword() == null || !userDTO.getPassword().matches(Validator.PASSWORD_VALIDATION)) {
+            message = "Password must be at least 10 characters and include uppercase, lowercase, digit and special character.";
+        } else {
+            try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+                User user = session.createQuery(
+                                "FROM User u WHERE u.email = :email AND u.verificationCode = :code",
+                                User.class)
+                        .setParameter("email", userDTO.getEmail().trim())
+                        .setParameter("code", userDTO.getVerificationCode())
+                        .getSingleResultOrNull();
+
+                if (user == null) {
+                    message = "The reset code is invalid or has already been used.";
+                } else {
+                    Transaction transaction = session.beginTransaction();
+                    user.setPassword(PasswordUtil.hash(userDTO.getPassword()));
+                    user.setVerificationCode("");
+                    session.merge(user);
+                    transaction.commit();
+                    status = true;
+                    message = "Password reset successfully. You can now log in.";
+                }
+            } catch (Exception e) {
+                message = "Unable to reset your password. Please try again.";
+                e.printStackTrace();
             }
         }
 
@@ -221,7 +281,7 @@ public class UserService {
                 u.setFname(userDTO.getFname());
                 u.setLname(userDTO.getLname());
                 u.setEmail(userDTO.getEmail());
-                u.setPassword(userDTO.getPassword());
+                u.setPassword(PasswordUtil.hash(userDTO.getPassword()));
 
                 String verificationCode = AppUtil.generateCode();
 

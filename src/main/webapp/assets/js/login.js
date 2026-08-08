@@ -10,7 +10,8 @@ async function login() {
 
     const userLoginObj = {
         email: email.value,
-        password: password.value
+        password: password.value,
+        rememberMe: document.getElementById("rememberme").checked
     }
 
     try {

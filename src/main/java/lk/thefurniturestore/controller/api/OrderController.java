@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lk.thefurniturestore.annotation.IsUser;
+import lk.thefurniturestore.annotation.IsAdmin;
 import lk.thefurniturestore.dto.CheckoutRequestDTO;
 import lk.thefurniturestore.service.OrderService;
 import lk.thefurniturestore.util.AppUtil;
@@ -31,6 +32,7 @@ public class OrderController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @IsAdmin
     public Response getAllOrders(@Context HttpServletRequest request) {
         String responseJson = new OrderService().getAllOrders(request);
         return Response.ok().entity(responseJson).build();
@@ -38,6 +40,7 @@ public class OrderController {
 
     @PUT
     @Path("/{id}/status")
+    @IsAdmin
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateOrderStatus(@PathParam("id") int orderId, String jsonData, @Context HttpServletRequest request) {
