@@ -17,27 +17,63 @@
 
 <main class="search-page">
     <section class="search-controls container">
-        <div class="search-bar-row">
-            <label class="visually-hidden" for="search-keyword">Search products</label>
-            <input type="search" id="search-keyword" placeholder="Search furniture, room pieces, materials..." autocomplete="off">
-            <button type="button" class="search-submit-btn" onclick="searchProducts();">Search</button>
-        </div>
-        <div class="search-filter-row">
-            <div class="search-filter-field">
-                <label for="search-sort">Filter</label>
-                <select id="search-sort" onchange="searchProducts();">
-                    <option value="recent">Recently added</option>
-                    <option value="price-asc">Price low to high</option>
-                    <option value="price-desc">Price high to low</option>
-                </select>
+        <div class="search-panel">
+            <div class="search-bar-row">
+                <label class="visually-hidden" for="search-keyword">Search products</label>
+                <svg class="search-bar-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="M20 20l-4.2-4.2"></path>
+                </svg>
+                <input type="search" id="search-keyword" placeholder="Search furniture, room pieces, materials..." autocomplete="off">
+                <button type="button" class="search-filter-toggle-btn" id="search-filter-toggle" onclick="toggleFilterPanel();" aria-expanded="false" aria-controls="search-filter-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 6h16"></path>
+                        <path d="M7 12h10"></path>
+                        <path d="M10 18h4"></path>
+                    </svg>
+                    <span>Filters</span>
+                    <span class="search-filter-count" id="search-filter-count" hidden>0</span>
+                </button>
+                <button type="button" class="search-submit-btn" onclick="searchProducts();">Search</button>
             </div>
-            <div class="search-filter-field">
-                <label for="search-category">Categories</label>
-                <select id="search-category" onchange="searchProducts();" multiple size="3"></select>
+
+            <div class="search-filter-row " id="search-filter-row">
+                <div class="search-filter-field search-filter-field--sort">
+                    <label for="search-sort">Sort by</label>
+                    <select id="search-sort" onchange="searchProducts();">
+                        <option value="recent">Recently added</option>
+                        <option value="price-asc">Price low to high</option>
+                        <option value="price-desc">Price high to low</option>
+                    </select>
+                </div>
+
+                <div class="search-filter-field search-filter-field--categories">
+                    <label>Categories</label>
+                    <div class="category-pill-group" id="search-category" data-selected-value=""></div>
+                </div>
+
+                <div class="search-filter-group search-filter-group--price">
+                    <div class="search-filter-field">
+                        <label for="search-min-price">Min price</label>
+                        <input type="number" id="search-min-price" min="0" placeholder="0" onchange="searchProducts();">
+                    </div>
+                    <div class="search-filter-field">
+                        <label for="search-max-price">Max price</label>
+                        <input type="number" id="search-max-price" min="0" placeholder="Any" onchange="searchProducts();">
+                    </div>
+                </div>
+
+                <div class="search-filter-group search-filter-group--actions">
+                    <label class="search-toggle-label" for="search-in-stock">
+                        <span class="search-toggle-switch">
+                            <input type="checkbox" id="search-in-stock" onchange="searchProducts();">
+                            <span class="search-toggle-track"><span class="search-toggle-thumb"></span></span>
+                        </span>
+                        <span>In stock only</span>
+                    </label>
+                    <button type="button" class="search-reset-btn" onclick="resetSearchFilters();">Reset</button>
+                </div>
             </div>
-            <div class="search-filter-field"><label for="search-min-price">Min price</label><input type="number" id="search-min-price" min="0" onchange="searchProducts();"></div>
-            <div class="search-filter-field"><label for="search-max-price">Max price</label><input type="number" id="search-max-price" min="0" onchange="searchProducts();"></div>
-            <div class="search-filter-field"><label><input type="checkbox" id="search-in-stock" onchange="searchProducts();"> In stock only</label></div>
         </div>
     </section>
 
@@ -59,158 +95,7 @@
 
 <script src="assets/js/notification.js"></script>
 <script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        restoreSearchPreferences();
-        loadCategories().then(() => searchProducts(1));
-
-        document.getElementById('search-keyword').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                searchProducts();
-            }
-        });
-    });
-
-    async function loadCategories() {
-        try {
-            const response = await fetch('api/products/categories');
-            const data = await response.json();
-            const categorySelect = document.getElementById('search-category');
-
-            if (!data.status || !data.data) {
-                return;
-            }
-
-            data.data.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category.id;
-                option.textContent = category.name;
-                categorySelect.appendChild(option);
-            });
-            const savedValues = (categorySelect.dataset.savedValue || '').split(',');
-            Array.from(categorySelect.options).forEach(option => option.selected = savedValues.includes(option.value));
-        } catch (e) {
-            showSearchMessage('Failed to load categories.', false);
-        }
-    }
-
-    async function searchProducts(page) {
-        const productContainer = document.getElementById('search-products');
-        productContainer.innerHTML = '<div class="search-status">Searching products...</div>';
-
-        const payload = {
-            keyword: document.getElementById('search-keyword').value,
-            sort: document.getElementById('search-sort').value,
-            categoryIds: Array.from(document.getElementById('search-category').selectedOptions).map(option => Number(option.value)),
-            minPrice: Number(document.getElementById('search-min-price').value),
-            maxPrice: Number(document.getElementById('search-max-price').value),
-            inStockOnly: document.getElementById('search-in-stock').checked,
-            page: page || 1,
-            pageSize: 12
-        };
-        localStorage.setItem('tfs-search-preferences', JSON.stringify({
-            keyword: payload.keyword, sort: payload.sort, categoryIds: payload.categoryIds,
-            minPrice: payload.minPrice || '', maxPrice: payload.maxPrice || '', inStockOnly: payload.inStockOnly
-        }));
-
-        try {
-            const response = await fetch('api/advanced-search/search-data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-            const data = await response.json();
-            renderProducts(data);
-        } catch (e) {
-            productContainer.innerHTML = '<div class="search-status">Search failed. Please try again.</div>';
-        }
-    }
-
-    function renderProducts(data) {
-        const productContainer = document.getElementById('search-products');
-        const resultCount = document.getElementById('search-result-count');
-
-        if (!data.status) {
-            productContainer.innerHTML = '<div class="search-status">' + (data.message || 'Failed to load products.') + '</div>';
-            resultCount.textContent = '0 products';
-            return;
-        }
-
-        const products = data.data || [];
-        resultCount.textContent = (data.count || 0) + ((data.count || 0) === 1 ? ' product' : ' products');
-
-        if (products.length === 0) {
-            productContainer.innerHTML = '<div class="search-status">No products found.</div>';
-            return;
-        }
-
-        productContainer.innerHTML = '';
-        products.forEach(product => productContainer.appendChild(createSearchProductCard(product)));
-        renderPagination(data.currentPage || 1, data.totalPages || 0);
-    }
-
-    function renderPagination(currentPage, totalPages) {
-        const container = document.getElementById('search-pagination');
-        container.innerHTML = '';
-        if (totalPages <= 1) return;
-        const addButton = (label, page, disabled) => {
-            const button = document.createElement('button');
-            button.type = 'button'; button.className = 'btn btn-outline-dark'; button.textContent = label; button.disabled = disabled;
-            button.onclick = () => searchProducts(page); container.appendChild(button);
-        };
-        addButton('Previous', currentPage - 1, currentPage === 1);
-        for (let page = Math.max(1, currentPage - 2); page <= Math.min(totalPages, currentPage + 2); page++) addButton(String(page), page, page === currentPage);
-        addButton('Next', currentPage + 1, currentPage === totalPages);
-    }
-
-    function restoreSearchPreferences() {
-        try {
-            const preferences = JSON.parse(localStorage.getItem('tfs-search-preferences') || '{}');
-            document.getElementById('search-keyword').value = preferences.keyword || '';
-            document.getElementById('search-sort').value = preferences.sort || 'recent';
-            document.getElementById('search-min-price').value = preferences.minPrice || '';
-            document.getElementById('search-max-price').value = preferences.maxPrice || '';
-            document.getElementById('search-in-stock').checked = Boolean(preferences.inStockOnly);
-            document.getElementById('search-category').dataset.savedValue = (preferences.categoryIds || []).join(',');
-        } catch (e) { localStorage.removeItem('tfs-search-preferences'); }
-    }
-
-    function createSearchProductCard(product) {
-        const card = document.createElement('div');
-        card.className = 'product-card search-product-card';
-        card.onclick = function() {
-            window.location.href = 'single-product-view.html?id=' + product.productId;
-        };
-
-        card.innerHTML =
-            '<img src="' + product.image + '" alt="' + escapeHtml(product.title) + '">' +
-            '<span class="search-product-category">' + escapeHtml(product.categoryName || 'Furniture') + '</span>' +
-            '<h4>' + escapeHtml(product.title) + '</h4>' +
-            '<p class="price">$' + Number(product.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</p>';
-        return card;
-    }
-
-    function escapeHtml(value) {
-        return String(value || '').replace(/[&<>"']/g, function(character) {
-            return {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            }[character];
-        });
-    }
-
-    function showSearchMessage(message, status) {
-        if (window.Notiflix) {
-            status ? Notiflix.Notify.success(message) : Notiflix.Notify.failure(message);
-        }
-    }
-</script>
+<script src="assets/js/search.js"></script>
 
 <script src="assets/js/vendor/modernizr.min.js"></script>
 <script src="assets/js/vendor/jquery.js"></script>
