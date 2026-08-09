@@ -77,47 +77,189 @@ body {
     font-family: 'header';
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.header-action-btn {
-    width: 2.6rem;
-    height: 2.5rem;
-    display: inline-flex;
+/* ===== Hamburger toggle button ===== */
+.navbar-toggler {
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    display: none;
     align-items: center;
     justify-content: center;
     border: 1px solid #d1cbbd;
     border-radius: 8px;
-    color: var(--darkest-brown);
     background-color: #fbfaf6;
+    box-shadow: none !important;
+    transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.navbar-toggler:hover {
+    border-color: var(--darkest-brown);
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(45, 40, 27, 0.15) !important;
+}
+
+.hamburger {
+    position: relative;
+    width: 1.3rem;
+    height: 1rem;
+    display: inline-block;
+}
+
+.hamburger span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--darkest-brown);
+    border-radius: 2px;
+    transition: transform 220ms ease, opacity 180ms ease, top 220ms ease;
+}
+
+.hamburger span:nth-child(1) { top: 0; }
+.hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+.hamburger span:nth-child(3) { top: 100%; transform: translateY(-100%); }
+
+.navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(1) {
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(3) {
+    top: 50%;
+    transform: translateY(-50%) rotate(-45deg);
+}
+
+/* Keep the mobile navigation separate from the header controls. */
+@media (max-width: 991.98px) {
+    .navbar-toggler {
+        display: inline-flex;
+    }
+
+    .navbar .container {
+        position: relative;
+    }
+
+    .header-actions {
+        position: relative;
+        z-index: 2;
+    }
+
+    .navbar-collapse {
+        position: absolute;
+        top: calc(100% + 0.6rem);
+        right: 0;
+        left: 0;
+        z-index: 1;
+        padding: 0.75rem;
+        background-color: #fff;
+        border-radius: 12px;
+        border: 1px solid rgba(45, 40, 27, 0.08);
+        box-shadow: 0 18px 32px rgba(45, 40, 27, 0.16);
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: opacity 200ms ease, transform 200ms ease;
+    }
+
+    .navbar-collapse.show,
+    .navbar-collapse.collapsing {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .navbar-collapse .navbar-nav {
+        display: grid;
+        gap: 0.15rem;
+        justify-content: stretch;
+    }
+
+    .navbar-collapse .nav-item {
+        margin-top: 0;
+        border-bottom: 1px solid rgba(45, 40, 27, 0.07);
+    }
+
+    .navbar-collapse .nav-item:last-child {
+        border-bottom: none;
+    }
+
+    .navbar-collapse .nav-link {
+        display: block;
+        padding: 0.75rem 0.6rem;
+        border-radius: 8px;
+        transition: background-color 160ms ease, color 160ms ease;
+    }
+
+    .navbar-collapse .nav-link:hover {
+        background-color: #f4f1ea;
+        color: var(--darkest-brown);
+    }
+}
+
+@media (max-width: 650px) {
+    .navbar-toggler {
+        width: 2.3rem;
+        height: 2.3rem;
+    }
+
+    .hamburger {
+        width: 1.1rem;
+        height: 0.85rem;
+    }
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+}
+
+.header-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    color: var(--darkest-brown);
     font-family: 'sub';
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     text-decoration: none;
+    padding: 0.2rem;
+    transition: color 160ms ease, transform 160ms ease;
 }
 
 .header-action-btn svg {
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.35rem;
+    height: 1.35rem;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.8;
+    stroke-width: 1.6;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
+.header-action-btn[href="wishlist.html"] {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
 .header-action-btn:hover {
-    color: #fff;
-    background-color: var(--darkest-brown);
-    border-color: var(--darkest-brown);
+    color: var(--turquoise);
+    transform: translateY(-1px);
 }
 
 .header-cart-btn {
-    background-color: var(--turquoise);
-    border-color: var(--turquoise);
-    color: #fff;
+    background-color: transparent;
+    color: var(--darkest-brown);
+}
+
+.header-cart-btn:hover {
+    color: var(--turquoise);
 }
 
 /* Footer */
@@ -286,26 +428,17 @@ body {
         color: var(--darkest-brown);
         font-size: 1rem;
     }
-    .navbar-toggler{
-        height: 2rem;
-        width: 2rem;
-    }
-    .navbar-toggler-icon{
-        font-size: 1rem;
-        margin-left: -9px;
-        margin-top: -3px;
-    }
+
     .header-actions {
-        gap: 0.4rem;
+        gap: 0.7rem;
     }
     .header-action-btn {
-        width: 2.1rem;
-        height: 2.1rem;
-        font-size: 0.78rem;
+        padding: 0.1rem;
+        font-size: 0.85rem;
     }
     .header-action-btn svg {
-        width: 1rem;
-        height: 1rem;
+        width: 1.15rem;
+        height: 1.15rem;
     }
 }
 
@@ -2747,5 +2880,44 @@ body {
 
     .how__step-content {
         padding: 28px 24px 30px;
+    }
+}
+
+/* Keep the mobile navigation separate from the header controls. */
+@media (max-width: 991.98px) {
+    .navbar .container {
+        position: relative;
+    }
+
+    .header-actions {
+        position: relative;
+        z-index: 2;
+    }
+
+    .navbar-collapse {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        z-index: 1;
+        padding: 0.65rem 1rem 1rem;
+        background-color: #fff;
+        border-top: 1px solid rgba(45, 40, 27, 0.1);
+        box-shadow: 0 12px 20px rgba(45, 40, 27, 0.12);
+    }
+
+    .navbar-collapse .navbar-nav {
+        display: grid;
+        gap: 0.15rem;
+        justify-content: stretch;
+    }
+
+    .navbar-collapse .nav-item {
+        margin-top: 0;
+    }
+
+    .navbar-collapse .nav-link {
+        display: block;
+        padding: 0.7rem 0.5rem;
     }
 }

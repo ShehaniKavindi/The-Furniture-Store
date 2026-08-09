@@ -28,14 +28,18 @@ class HeaderContent extends HTMLElement{
                                 <path d="M2 3h3l2.2 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L20.5 7H6"></path>
                             </svg>
                         </a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-                            <span class="navbar-toggler-icon"></span>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="hamburger">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
                         </button>
                     </div>
                 </div>
-                
 
-                
+
+
                 <div class="w-100 collapse navbar-collapse" id="navMenu">
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
@@ -52,6 +56,7 @@ class HeaderContent extends HTMLElement{
         `;
 
         this.loadHeaderCategoryLinks();
+        this.setupMobileMenuBehavior();
     }
 
     async loadHeaderCategoryLinks() {
@@ -78,6 +83,32 @@ class HeaderContent extends HTMLElement{
         } catch (e) {
             console.error('Failed to load header category links.', e);
         }
+    }
+
+    setupMobileMenuBehavior() {
+        const navMenu = this.querySelector('#navMenu');
+        const toggler = this.querySelector('.navbar-toggler');
+        if (!navMenu || !toggler || typeof bootstrap === 'undefined') return;
+
+        const collapseInstance = bootstrap.Collapse.getOrCreateInstance(navMenu, { toggle: false });
+
+        // Close the mobile menu automatically when a link inside it is tapped.
+        navMenu.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navMenu.classList.contains('show')) {
+                    collapseInstance.hide();
+                }
+            });
+        });
+
+        // Close the menu when tapping/clicking outside of it.
+        document.addEventListener('click', (event) => {
+            const clickedInsideMenu = navMenu.contains(event.target);
+            const clickedToggler = toggler.contains(event.target);
+            if (!clickedInsideMenu && !clickedToggler && navMenu.classList.contains('show')) {
+                collapseInstance.hide();
+            }
+        });
     }
 }
 customElements.define("header-content",HeaderContent);
