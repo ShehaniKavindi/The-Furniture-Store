@@ -73,23 +73,39 @@
             </div>
         </section>
 
-        <section class="container promise-section">
-            <div>
+        <section class="container why-section">
+            <div class="why-intro">
                 <p class="label">WHY CHOOSE US</p>
                 <h2>A smoother way to furnish your space.</h2>
+                <p>From curated collections to secure checkout, every step is designed to make furnishing your home simple.</p>
             </div>
-            <div class="promise-list">
-                <div>
-                    <h4>Curated Collections</h4>
-                    <p>Focused product ranges make it easier to find furniture that belongs together.</p>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon">
+                        <svg viewBox="0 0 24 24"><path d="M4 19V7a2 2 0 0 1 2-2h5l2 2h5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>
+                    </div>
+                    <div>
+                        <h4>Curated Collections</h4>
+                        <p>Focused product ranges make it easier to find furniture that belongs together.</p>
+                    </div>
                 </div>
-                <div>
-                    <h4>Home-Friendly Service</h4>
-                    <p>Helpful support for product questions, delivery details, and order guidance.</p>
+                <div class="why-card">
+                    <div class="why-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <div>
+                        <h4>Home-Friendly Service</h4>
+                        <p>Helpful support for product questions, delivery details, and order guidance.</p>
+                    </div>
                 </div>
-                <div>
-                    <h4>Secure Payments</h4>
-                    <p>Checkout is kept clear, protected, and easy to complete.</p>
+                <div class="why-card">
+                    <div class="why-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <div>
+                        <h4>Secure Payments</h4>
+                        <p>Checkout is kept clear, protected, and easy to complete.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -102,7 +118,7 @@
 
             <div class="showroom-row">
                 <div class="showroom-video">
-                    <video controls preload="metadata" playsinline>
+                    <video controls muted preload="metadata" playsinline>
                         <source src="assets/videos/about-1.mp4" type="video/mp4">
                         Your browser does not support video playback.
                     </video>
@@ -130,7 +146,7 @@
                     </p>
                 </div>
                 <div class="showroom-video">
-                    <video controls preload="metadata" playsinline>
+                    <video controls muted preload="metadata" playsinline>
                         <source src="assets/videos/about-2.mp4" type="video/mp4">
                         Your browser does not support video playback.
                     </video>
@@ -143,6 +159,26 @@
     <footer class="footer">
         <footer-content></footer-content>
     </footer>
+
+    <script>
+        (function () {
+            const videos = document.querySelectorAll('.showroom-video video');
+            if (!videos.length || !('IntersectionObserver' in window)) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        video.play().catch(() => {});
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            videos.forEach(video => observer.observe(video));
+        })();
+    </script>
 
     <script src="assets/js/footer.js"></script>
     <script src="assets/js/vendor/modernizr.min.js"></script>

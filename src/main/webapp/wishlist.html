@@ -25,8 +25,12 @@
 </footer>
 
 <script src="assets/js/footer.js"></script>
-<script src="assets/js/notiflix-aio-3.2.8.min.js"</script>
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
 <script>
-async function loadWishlist(){const container=document.getElementById('wishlist-products');container.textContent='Loading wishlist...';try{const response=await fetch('api/wishlist');const data=await response.json();if(!data.status){container.textContent=data.message;return;}if(!data.data.length){container.textContent='Your wishlist is empty.';return;}container.innerHTML='';data.data.forEach(product=>{const card=document.createElement('div');card.className='product-card search-product-card';card.innerHTML='<img src="'+product.image+'" alt=""><span class="search-product-category">'+product.categoryName+'</span><h4>'+product.title+'</h4><p class="price">$'+Number(product.price).toFixed(2)+'</p><button class="btn btn-outline-dark">Remove</button>';card.onclick=event=>{if(event.target.tagName==='BUTTON')return;location.href='single-product-view.html?id='+product.productId;};card.querySelector('button').onclick=()=>removeProduct(product.productId);container.appendChild(card);});}catch(e){container.textContent='Unable to load wishlist.';}}
-async function removeProduct(productId){const response=await fetch('api/wishlist/'+productId,{method:'DELETE'});const data=await response.json();if(data.status)loadWishlist();else Notiflix.Notify.failure(data.message);}
+async function loadWishlist(){
+    const container=document.getElementById('wishlist-products');container.textContent='Loading wishlist...';
+    try{const response=await fetch('api/wishlist');const data=await response.json();if(!data.status){container.textContent=data.message;return;}if(!data.data.length){container.textContent='Your wishlist is empty.';return;}container.innerHTML='';data.data.forEach(product=>{const card=document.createElement('div');card.className='product-card search-product-card';card.innerHTML='<img src="'+product.image+'" alt=""><span class="search-product-category">'+product.categoryName+'</span><h4>'+product.title+'</h4><p class="price">$'+Number(product.price).toFixed(2)+'</p><button class="btn btn-outline-dark">Remove</button>';card.onclick=event=>{if(event.target.tagName==='BUTTON')return;location.href='single-product-view.html?id='+product.productId;};card.querySelector('button').onclick=()=>removeProduct(product.productId);container.appendChild(card);});}catch(e){container.textContent='Unable to load wishlist.';}}
+async function removeProduct(productId){
+    const response=await fetch('api/wishlist/'+productId,{method:'DELETE'});
+    const data=await response.json();if(data.status)loadWishlist();else Notiflix.Notify.failure(data.message);}
 document.addEventListener('DOMContentLoaded',loadWishlist);</script></body></html>

@@ -20,20 +20,34 @@
                 <h2 class="brand-text">THE FURNITURE STORE</h2>
             </div>
         </div>
-        <div class="login-box ms-4 mt-4">
+        <div class="login-box">
             <div class="login-header">
-                <h1>ADMIN LOGIN</h1>
+                <h1>Admin Login</h1>
             </div>
+            <p class="login-subtitle">Restricted access for store administrators</p>
             <p class="text-danger" id="message"></p>
             <fieldset>
                 <div class="field">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" value=""/>
+                    <label for="email" class="visually-hidden">Email</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                            <path d="M3 7l9 6 9-6"></path>
+                        </svg>
+                        <input type="email" id="email" placeholder="Email Address" value=""/>
+                    </div>
                 </div>
                 <div class="field">
-                    <label for="password">password</label>
-                    <input type="password" id="password" value="">
+                    <label for="password" class="visually-hidden">Password</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+                            <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                        </svg>
+                        <input type="password" id="password" placeholder="Password" value="">
+                    </div>
                 </div>
+
                 <div class="login-options">
                     <div>
                         <a href="login.html">Customer Login</a>
@@ -41,7 +55,7 @@
                 </div>
 
                 <div class="buttons">
-                    <button class="login-btn" onclick="adminLogin();">LOGIN</button>
+                    <button class="login-btn" onclick="adminLogin();">Login</button>
                 </div>
             </fieldset>
         </div>

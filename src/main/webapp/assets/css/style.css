@@ -1052,22 +1052,280 @@ body {
 }
 
 .login-box {
-    width: min(86%, 560px);
-    height: auto;
-    margin: 1rem auto 0 !important;
-    padding: 2.2rem;
-    border: 1px solid #d8d1c3;
-    border-radius: 8px;
+    width: min(90%, 420px);
+    margin: 1.5rem auto 0 !important;
+    padding: 2.75rem 2.25rem;
+    border: none;
+    border-radius: 24px;
     background-color: #fff;
-    box-shadow: 0 18px 45px rgba(45, 40, 27, 0.08);
+    box-shadow: 0 24px 55px rgba(45, 40, 27, 0.1);
+}
+
+.login-box .login-header {
+    text-align: center;
 }
 
 .login-box .login-header h1 {
-    margin: 0 0 1.6rem;
-    color: var(--darkest-brown);
+    margin: 0;
     font-family: 'main';
-    font-size: 3rem;
+    font-weight: 400;
+    font-size: 2rem;
+    letter-spacing: 0;
+    color: var(--dark-grey-brown);
+}
+
+.login-subtitle {
+    margin: 0.5rem 0 2rem;
+    color: var(--light-grey-brown);
+    font-family: 'sub';
+    font-size: 0.95rem;
+}
+
+.login-box .field {
+    margin-bottom: 1.1rem;
+}
+
+.login-box .field label {
+    display: none;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.field-icon {
+    position: absolute;
+    left: 1.1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: none;
+    stroke: var(--turquoise);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+.login-box .field input {
+    height: 3.4rem;
+    border: none;
+    border-radius: 14px;
+    padding-left: 3.1rem;
+    background-color: #f4f1ea;
+    color: var(--darkest-brown);
+    font-family: 'sub';
+}
+
+.login-box .field input::placeholder {
+    color: var(--light-grey-brown);
+}
+
+.login-box .field input:hover,
+.login-box .field input:focus {
+    outline: none;
+    border: none;
+    box-shadow: 0 0 0 2px var(--turquoise);
+}
+
+.login-box .login-options {
+    font-family: 'sub';
+    font-size: 0.88rem;
+}
+
+.remember-me-field {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.remember-me-field label {
+    margin: 0;
+    color: var(--dark-grey-brown);
+    font-family: 'sub';
+    font-size: 0.88rem;
+    text-transform: none;
+}
+
+.login-box .login-options a {
+    color: var(--turquoise);
     font-weight: 500;
+}
+
+.login-box .buttons {
+    display: block;
+}
+
+.login-box .buttons .login-btn {
+    width: 100%;
+    height: 3.4rem;
+    border-radius: 999px;
+    background-color: var(--turquoise);
+    border-color: var(--turquoise);
+    font-family: 'sub';
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.login-box .buttons .login-btn:hover {
+    background-color: var(--darkest-brown);
+    border-color: var(--darkest-brown);
+}
+
+.login-box .buttons .register-btn {
+    width: 100%;
+    height: 3.4rem;
+    margin-top: 0.85rem;
+    border: 1.5px solid var(--turquoise);
+    background: transparent;
+    color: var(--turquoise);
+    border-radius: 999px;
+    font-family: 'sub';
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.login-box .buttons .register-btn:hover {
+    background-color: var(--turquoise);
+    color: #fff;
+}
+
+.register-prompt {
+    margin: 1.35rem 0 0;
+    text-align: center;
+    color: var(--dark-grey-brown);
+    font-family: 'sub';
+    font-size: 0.9rem;
+}
+
+.register-prompt .register-btn {
+    border: none;
+    background: none;
+    padding: 0;
+    margin-left: 0.25rem;
+    color: var(--turquoise);
+    font-family: 'sub';
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: none;
+    width: auto;
+    height: auto;
+}
+
+.register-prompt .register-btn:hover {
+    color: var(--darkest-brown);
+    background: none;
+}
+
+.login-box .admin-login-link {
+    margin-top: 1.1rem;
+}
+
+.reg-box {
+    width: min(90%, 420px);
+    margin: 1.5rem auto 0 !important;
+    padding: 2.75rem 2.25rem;
+    border: none;
+    border-radius: 24px;
+    background-color: #fff;
+    box-shadow: 0 24px 55px rgba(45, 40, 27, 0.1);
+}
+
+.reg-box .reg-header {
+    text-align: center;
+}
+
+.reg-box .reg-header h1 {
+    margin: 0;
+    font-family: 'main';
+    font-weight: 400;
+    font-size: 2rem;
+    letter-spacing: 0;
+    color: var(--dark-grey-brown);
+}
+
+.reg-subtitle {
+    margin: 0.5rem 0 2rem;
+    color: var(--light-grey-brown);
+    font-family: 'sub';
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.reg-box .field {
+    margin-bottom: 1.1rem;
+}
+
+.reg-box .field label {
+    display: none;
+}
+
+.reg-box .field input {
+    height: 3.4rem;
+    border: none;
+    border-radius: 14px;
+    padding-left: 3.1rem;
+    background-color: #f4f1ea;
+    color: var(--darkest-brown);
+    font-family: 'sub';
+}
+
+.reg-box .field input::placeholder {
+    color: var(--light-grey-brown);
+}
+
+.reg-box .field input:hover,
+.reg-box .field input:focus {
+    outline: none;
+    border: none;
+    box-shadow: 0 0 0 2px var(--turquoise);
+}
+
+.reg-box .buttons.register-actions {
+    display: block;
+    margin-top: 1.5rem;
+}
+
+.reg-box .buttons .login-btn {
+    width: 100%;
+    height: 3.4rem;
+    border-radius: 999px;
+    background-color: var(--turquoise);
+    border-color: var(--turquoise);
+    font-family: 'sub';
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.reg-box .buttons .login-btn:hover {
+    background-color: var(--darkest-brown);
+    border-color: var(--darkest-brown);
+}
+
+.reg-box .buttons .backtosignin-btn {
+    width: 100%;
+    height: auto;
+    margin-top: 1.1rem;
+    border: none;
+    background: none;
+    padding: 0;
+    color: var(--dark-grey-brown);
+    font-family: 'sub';
+    font-weight: 400;
+    font-size: 0.9rem;
+    text-transform: none;
+}
+
+.reg-box .buttons .backtosignin-btn:hover {
+    color: var(--turquoise);
+    background: none;
 }
 
 .field {
@@ -3193,5 +3451,441 @@ body {
 
     .search-reset-btn {
         width: 100%;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   CONTACT PAGE REDESIGN
+   Append this block to the end of assets/css/style.css
+   Uses the existing :root tokens and 'main' / 'sub' fonts —
+   no new colors or typefaces introduced.
+   ========================================================= */
+
+.contact-section-new {
+    padding: 5rem 0 2rem;
+}
+
+/* ---- Topic chips ---- */
+.contact-topics {
+    margin-bottom: 2.25rem;
+}
+
+.topic-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1rem;
+}
+
+.topic-chip {
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    background-color: var(--turquoise);
+    color: #ffffff;
+    font-family: 'sub';
+    font-size: 0.85rem;
+    padding: 0.6rem 1.15rem;
+    cursor: pointer;
+    transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;
+}
+
+.topic-chip svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: var(--bg-color);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.topic-chip:hover {
+    border-color: var(--turquoise);
+    background: var(--darkest-brown);
+}
+
+.topic-chip.is-selected {
+    background-color: var(--darkest-brown);
+    border-color: var(--darkest-brown);
+    color: #fff;
+}
+
+.topic-chip.is-selected svg {
+    stroke: #fff;
+}
+
+/* ---- Split card: dark sidebar + white form ---- */
+.contact-card {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    background-color: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 26px 60px rgba(45, 40, 27, 0.1);
+}
+
+.contact-card-sidebar {
+    background-color: var(--darkest-brown);
+    color: var(--bg-color);
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-card-sidebar .label {
+    color: rgba(227, 227, 219, 0.55);
+}
+
+.contact-card-sidebar h3 {
+    font-family: 'main';
+    font-weight: 500;
+    font-size: 2.15rem;
+    color: #fff;
+    margin: 0.6rem 0 1rem;
+    line-height: 1.15;
+}
+
+.contact-card-sidebar > p {
+    font-family: 'sub';
+    color: rgba(227, 227, 219, 0.72);
+    line-height: 1.75;
+}
+
+.sidebar-points {
+    display: grid;
+    gap: 1.15rem;
+    margin-top: auto;
+}
+
+.sidebar-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
+.sidebar-point svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+    fill: none;
+    stroke: var(--bg-color);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.sidebar-point span {
+    font-family: 'sub';
+    font-size: 0.9rem;
+    color: rgba(227, 227, 219, 0.85);
+    line-height: 1.55;
+}
+
+.contact-card-form {
+    padding: 3rem 2.75rem;
+}
+
+.field-required {
+    color: var(--turquoise);
+}
+
+.contact-card-form select#subject {
+    width: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid #d1cbbd;
+    border-radius: 6px;
+    padding: 0.8rem 2.6rem 0.8rem 0.9rem;
+    color: var(--darkest-brown);
+    font-family: 'sub';
+    font-size: 1rem;
+    background-color: #fbfaf6;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236f6550' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    background-size: 1rem;
+}
+
+.contact-card-form select#subject:focus {
+    outline: none;
+    border-color: var(--turquoise);
+    box-shadow: 0 0 0 3px rgba(52, 84, 80, 0.15);
+}
+
+.contact-card-form select#subject:invalid {
+    color: var(--light-grey-brown);
+}
+
+.form-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: -0.35rem;
+    font-family: 'sub';
+    font-size: 0.8rem;
+    color: var(--light-grey-brown);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.btn-clear {
+    background-color: transparent;
+    border: 1px solid rgba(45, 40, 27, 0.18);
+    color: var(--dark-grey-brown);
+    border-radius: 8px;
+    padding: 0.85rem 1.4rem;
+    font-family: 'sub';
+    font-size: 0.95rem;
+    transition: border-color 160ms ease, color 160ms ease;
+}
+
+.btn-clear:hover {
+    border-color: var(--darkest-brown);
+    color: var(--darkest-brown);
+}
+
+.btn-send {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background-color: var(--darkest-brown);
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    padding: 0.85rem 1.6rem;
+    font-family: 'main';
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    transition: background-color 160ms ease;
+}
+
+.btn-send svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.btn-send:hover {
+    background-color: var(--turquoise);
+}
+
+.form-note.is-success {
+    color: var(--turquoise);
+    font-family: 'sub';
+    margin-top: 1rem;
+}
+
+/* ---- "Other ways to reach us" grid ---- */
+.reach-band {
+    background-color: #fff;
+    padding: 4.5rem 0 5rem;
+    margin-top: 4rem;
+}
+
+.reach-heading {
+    text-align: center;
+    margin-bottom: 2.75rem;
+}
+
+.reach-heading .label.center {
+    display: block;
+    text-align: center;
+}
+
+.reach-heading h2 {
+    font-family: 'main';
+    font-weight: 500;
+    font-size: 2.4rem;
+    color: var(--darkest-brown);
+    margin-top: 0.4rem;
+}
+
+.reach-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.reach-card {
+    background-color: var(--bg-color);
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+}
+
+.reach-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1.1rem;
+    border-radius: 50%;
+    background-color: var(--turquoise);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 18px rgba(45, 40, 27, 0.08);
+}
+
+.reach-icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    fill: none;
+    stroke: var(--bg-color);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.reach-card .label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.reach-card p {
+    font-family: 'sub';
+    color: var(--dark-grey-brown);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.reach-card a {
+    color: var(--dark-grey-brown);
+    text-decoration: none;
+}
+
+.reach-card a:hover {
+    color: var(--turquoise);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+    .contact-card {
+        grid-template-columns: 1fr;
+    }
+
+    .reach-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .contact-card-sidebar,
+    .contact-card-form {
+        padding: 2rem 1.5rem;
+    }
+
+    .reach-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn-clear,
+    .btn-send {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+
+.why-section {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 3rem;
+    align-items: start;
+    padding-top: 5rem;
+}
+
+.why-intro h2 {
+    font-family: 'main';
+    font-weight: 500;
+    font-size: 2.8rem;
+    color: var(--darkest-brown);
+    margin: 0.6rem 0 1rem;
+}
+
+.why-intro p {
+    font-family: 'sub';
+    color: var(--dark-grey-brown);
+    line-height: 1.8;
+    max-width: 26rem;
+}
+
+.why-grid {
+    border-top: 1px solid rgba(45, 40, 27, 0.12);
+}
+
+.why-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid rgba(45, 40, 27, 0.12);
+}
+
+.why-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: var(--turquoise);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.why-icon svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    fill: none;
+    stroke: var(--bg-color);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.why-card h4 {
+    font-family: 'main';
+    font-weight: 500;
+    font-size: 1.35rem;
+    color: var(--darkest-brown);
+    margin-bottom: 0.4rem;
+}
+
+.why-card p {
+    font-family: 'sub';
+    color: var(--dark-grey-brown);
+    line-height: 1.65;
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .why-section {
+        grid-template-columns: 1fr;
     }
 }

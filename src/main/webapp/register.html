@@ -9,76 +9,99 @@
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/logo.png">
 </head>
 <body>
-    <div class="reg-page row row-cols-2" style="width: 100%; height: 100vh;">
-        <div class="reg-container col" >
-            <div class="brand-label">
-                <div class="label-outer col-1">
-                    <div class="label-inner col-2">
-                    </div>
-                </div>
-                <div>
-                    <h2 class="brand-text">THE FURNITURE STORE</h2>
-                </div>
+<div class="reg-page row row-cols-2" style="width: 100%; height: 100vh;">
+    <div class="reg-container col">
+        <div class="brand-label">
+            <div class="label-outer col-1">
+                <div class="label-inner col-2"></div>
             </div>
-            <div class="reg-box ms-3 mt-3">
-                <div class="reg-header">
-                    <h1>REGISTER</h1>
-                </div>
-                <fieldset>
-                    <div class="field">
-                        <label for="fname">First Name</label>
-                        <input type="text" id="fname"/>
-                    </div>
-                    <div class="field">
-                        <label for="lname">Last Name</label>
-                        <input type="text" id="lname"/>
-                    </div>
-                    <div class="field">
-                        <label for="email">Email</label>
-                        <input type="email" id="email"/>
-                    </div>
-                    <div class="field">
-                        <label for="password">password</label>
-                        <input type="password" id="password">
-                    </div>
-                   
-                    <div class="buttons register-actions">
-                        <button class="login-btn" onclick="register();">REGISTER</button>
-                        <button class="backtosignin-btn" onclick="gotoLogin();">Already have an account?</button>
-                    </div>
-                </fieldset>
+            <div>
+                <h2 class="brand-text">THE FURNITURE STORE</h2>
             </div>
         </div>
-        
-        <div class="reg-banner col">
-            
+
+        <div class="reg-box">
+            <div class="reg-header">
+                <h1>Create Account</h1>
+            </div>
+            <p class="reg-subtitle">Join us to start shopping</p>
+            <fieldset>
+                <div class="field">
+                    <label for="fname" class="visually-hidden">First Name</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+                        </svg>
+                        <input type="text" id="fname" placeholder="First Name"/>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="lname" class="visually-hidden">Last Name</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+                        </svg>
+                        <input type="text" id="lname" placeholder="Last Name"/>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="email" class="visually-hidden">Email</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                            <path d="M3 7l9 6 9-6"></path>
+                        </svg>
+                        <input type="email" id="email" placeholder="Email Address"/>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="password" class="visually-hidden">Password</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+                            <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                        </svg>
+                        <input type="password" id="password" placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="buttons register-actions">
+                    <button class="login-btn" onclick="register();">Register</button>
+                    <button class="backtosignin-btn" onclick="gotoLogin();">Already have an account? Sign In</button>
+                </div>
+            </fieldset>
         </div>
     </div>
 
-    <!-- JS
-============================================ -->
-    <!-- Main JS -->
-    <script src="assets/js/register.js"></script>
-    <!-- Modernizer JS -->
-    <script src="assets/js/vendor/modernizr.min.js"></script>
-    <!-- jQuery JS -->
-    <script src="assets/js/vendor/jquery.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="assets/js/vendor/popper.min.js"></script>
-    <script src="assets/js/vendor/slick.min.js"></script>
-    <script src="assets/js/vendor/js.cookie.js"></script>
-    <script src="assets/js/vendor/jquery-ui.min.js"></script>
-    <script src="assets/js/vendor/jquery.ui.touch-punch.min.js"></script>
-    <script src="assets/js/vendor/jquery.countdown.min.js"></script>
-    <script src="assets/js/vendor/sal.js"></script>
-    <script src="assets/js/vendor/jquery.magnific-popup.min.js"></script>
-    <script src="assets/js/vendor/imagesloaded.pkgd.min.js"></script>
-    <script src="assets/js/vendor/isotope.pkgd.min.js"></script>
-    <script src="assets/js/vendor/counterup.js"></script>
-    <script src="assets/js/vendor/waypoints.min.js"></script>
+    <div class="reg-banner col"></div>
+</div>
 
-    <script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JS
+============================================ -->
+<!-- Main JS -->
+<script src="assets/js/register.js"></script>
+<!-- Modernizer JS -->
+<script src="assets/js/vendor/modernizr.min.js"></script>
+<!-- jQuery JS -->
+<script src="assets/js/vendor/jquery.js"></script>
+<!-- Bootstrap JS -->
+<script src="assets/js/vendor/popper.min.js"></script>
+<script src="assets/js/vendor/slick.min.js"></script>
+<script src="assets/js/vendor/js.cookie.js"></script>
+<script src="assets/js/vendor/jquery-ui.min.js"></script>
+<script src="assets/js/vendor/jquery.ui.touch-punch.min.js"></script>
+<script src="assets/js/vendor/jquery.countdown.min.js"></script>
+<script src="assets/js/vendor/sal.js"></script>
+<script src="assets/js/vendor/jquery.magnific-popup.min.js"></script>
+<script src="assets/js/vendor/imagesloaded.pkgd.min.js"></script>
+<script src="assets/js/vendor/isotope.pkgd.min.js"></script>
+<script src="assets/js/vendor/counterup.js"></script>
+<script src="assets/js/vendor/waypoints.min.js"></script>
+
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

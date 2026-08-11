@@ -30,66 +30,133 @@
         </div>
     </section>
 
-    <section class="container contact-section">
-        <div class="contact-details">
-            <p class="label">GET IN TOUCH</p>
-            <h2>We would love to hear from you.</h2>
-            <p>
-                Our team can help with product information, order support, delivery questions,
-                and recommendations for your home.
-            </p>
+    <section class="container contact-section-new">
 
-            <div class="contact-info-list">
-                <div class="contact-info-item">
-                    <span>Phone</span>
-                    <a href="tel:+94112345678">+94 11 234 5678</a>
-                </div>
-                <div class="contact-info-item">
-                    <span>Email</span>
-                    <a href="mailto:hello@thefurniturestore.lk">hello@thefurniturestore.lk</a>
-                </div>
-                <div class="contact-info-item">
-                    <span>Showroom</span>
-                    <p>45 Park Road, Colombo, Sri Lanka</p>
-                </div>
-                <div class="contact-info-item">
-                    <span>Hours</span>
-                    <p>Mon - Sat: 9.00 AM - 7.00 PM</p>
-                </div>
+        <div class="contact-topics">
+            <p class="label">WHAT CAN WE HELP WITH?</p>
+            <div class="topic-chip-row" id="topicChipRow">
+                <button type="button" class="topic-chip" data-reason="order">
+                    <svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+                    Order status
+                </button>
+                <button type="button" class="topic-chip" data-reason="product">
+                    <svg viewBox="0 0 24 24"><path d="M4 19V7a2 2 0 0 1 2-2h5l2 2h5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>
+                    Product question
+                </button>
+                <button type="button" class="topic-chip" data-reason="delivery">
+                    <svg viewBox="0 0 24 24"><rect x="1" y="7" width="14" height="10" rx="1"/><path d="M15 10h4l3 3v4h-7z"/><circle cx="6" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>
+                    Delivery &amp; assembly
+                </button>
+                <button type="button" class="topic-chip" data-reason="custom">
+                    <svg viewBox="0 0 24 24"><path d="M4 21v-4l12-12 4 4-12 12H4z"/><path d="M13 6l4 4"/></svg>
+                    Custom order
+                </button>
             </div>
         </div>
 
-        <form class="contact-form" id="contactForm">
-            <div class="form-row">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" placeholder="Your name" required>
+        <div class="contact-card">
+            <div class="contact-card-sidebar">
+                <p class="label">CUSTOMER CARE</p>
+                <h3>Let's talk furniture.</h3>
+                <p>
+                    Whether you're weighing two sofas, tracking a delivery, or dreaming up a
+                    custom piece, our team gets back to every message personally.
+                </p>
+
+
+                <div class="sidebar-points">
+                    <div class="sidebar-point">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                        <span>We usually reply within 1 business day</span>
+                    </div>
+                    <div class="sidebar-point">
+                        <svg viewBox="0 0 24 24"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span>Showroom visits are welcome, no appointment needed</span>
+                    </div>
+                    <div class="sidebar-point">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                        <span>Order and delivery updates land straight in your inbox</span>
+                    </div>
+                </div>
             </div>
-            <div class="form-row">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="you@example.com" required>
-            </div>
-            <div class="form-row">
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" placeholder="How can we help?" required>
-            </div>
-            <div class="form-row">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" rows="5" placeholder="Tell us what you are looking for" required></textarea>
-            </div>
-            <button type="submit" class="primary-link-btn">Send Message</button>
-            <p class="form-note" id="formNote"></p>
-        </form>
+
+            <form class="contact-card-form" id="contactForm" novalidate>
+                <div class="form-row">
+                    <label for="name">Full name <span class="field-required">*</span></label>
+                    <input type="text" id="name" name="name" placeholder="Your name" required>
+                </div>
+                <div class="form-row">
+                    <label for="email">Email address <span class="field-required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-row">
+                    <label for="subject">Reason <span class="field-required">*</span></label>
+                    <select id="subject" name="subject" required>
+                        <option value="" disabled selected>Select a reason</option>
+                        <option value="order">Order status</option>
+                        <option value="product">Product question</option>
+                        <option value="delivery">Delivery &amp; assembly</option>
+                        <option value="custom">Custom order</option>
+                        <option value="other">Something else</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="message">Message <span class="field-required">*</span></label>
+                    <textarea id="message" name="message" rows="5" maxlength="1000"
+                              placeholder="Tell us what you are looking for" required></textarea>
+                </div>
+                <div class="form-foot">
+                    <span>Be as specific as you can</span>
+                    <span class="char-count" id="charCount">0 / 1000</span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-clear" id="clearForm">Clear</button>
+                    <button type="submit" class="btn-send">
+                        Send message
+                        <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    </button>
+                </div>
+                <p class="form-note" id="formNote"></p>
+            </form>
+        </div>
     </section>
 
-    <section class="visit-band">
-        <div class="container visit-grid">
-            <div>
-                <p class="label">VISIT THE SHOWROOM</p>
-                <h2>See materials, finishes, and comfort in person.</h2>
+    <section class="reach-band">
+        <div class="container">
+            <div class="reach-heading">
+                <p class="label center">OTHER WAYS TO REACH US</p>
+                <h2>See it, touch it, ask us in person.</h2>
             </div>
-            <div class="map-placeholder">
-                <p>45 Park Road, Colombo</p>
-                <span>Open Monday to Saturday</span>
+            <div class="reach-grid">
+                <div class="reach-card">
+                    <div class="reach-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <span class="label">SHOWROOM</span>
+                    <p>45 Park Road<br>Colombo, Sri Lanka</p>
+                </div>
+                <div class="reach-card">
+                    <div class="reach-icon">
+                        <svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 3a2 2 0 0 1-.4 2.1L8 10.1a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c1 .4 2 .6 3 .7a2 2 0 0 1 1.6 2z"/></svg>
+                    </div>
+                    <span class="label">CALL US</span>
+                    <p><a href="tel:+94112345678">+94 11 234 5678</a></p>
+                </div>
+                <div class="reach-card">
+                    <div class="reach-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                    </div>
+                    <span class="label">EMAIL US</span>
+                    <p><a href="mailto:hello.thefurniturestore@gmail.com">hello.thefurniturestore@gmail.com</a></p>
+                </div>
+                <div class="reach-card">
+                    <div class="reach-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                    </div>
+                    <span class="label">HOURS</span>
+                    <p>Mon&ndash;Sat: 9.00 AM&ndash;7.00 PM</p>
+                </div>
             </div>
         </div>
     </section>
@@ -99,17 +166,48 @@
     <footer-content></footer-content>
 </footer>
 
-<script src="assets/js/footer.js"></script>
-
 <script>
-    document.getElementById('contactForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+    (function () {
+        const form = document.getElementById('contactForm');
+        const subject = document.getElementById('subject');
+        const message = document.getElementById('message');
+        const charCount = document.getElementById('charCount');
+        const chips = document.querySelectorAll('.topic-chip');
+        const clearBtn = document.getElementById('clearForm');
+        const note = document.getElementById('formNote');
 
-        document.getElementById('formNote').textContent =
-            'Thank you. Your message is ready for our team to review.';
-        this.reset();
-    });
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('is-selected'));
+                chip.classList.add('is-selected');
+                subject.value = chip.dataset.reason;
+            });
+        });
+
+        message.addEventListener('input', () => {
+            charCount.textContent = message.value.length + ' / 1000';
+        });
+
+        clearBtn.addEventListener('click', () => {
+            form.reset();
+            charCount.textContent = '0 / 1000';
+            chips.forEach(c => c.classList.remove('is-selected'));
+            note.textContent = '';
+            note.classList.remove('is-success');
+        });
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            note.textContent = 'Message sent. We\'ll reply within 1 business day.';
+            note.classList.add('is-success');
+            form.reset();
+            charCount.textContent = '0 / 1000';
+            chips.forEach(c => c.classList.remove('is-selected'));
+        });
+    })();
 </script>
+
+<script src="assets/js/footer.js"></script>
 <script src="assets/js/vendor/modernizr.min.js"></script>
 <script src="assets/js/vendor/jquery.js"></script>
 <script src="assets/js/vendor/popper.min.js"></script>

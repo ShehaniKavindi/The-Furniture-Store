@@ -10,82 +10,98 @@
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/logo.png">
 </head>
 <body>
-    <div class="login-page row row-cols-2" style="width: 100%; height: 100vh;">
-        <div class="login-container col" >
-            <div class="brand-label">
-                <div class="label-outer col-1">
-                    <div class="label-inner col-2">
-                        
-                    </div>
-                </div>
-                <div>
-                    <h2 class="brand-text">THE FURNITURE STORE</h2>
-                </div>
+<div class="login-page row row-cols-2" style="width: 100%; height: 100vh;">
+    <div class="login-container col">
+        <div class="brand-label">
+            <div class="label-outer col-1">
+                <div class="label-inner col-2"></div>
             </div>
-            <div class="login-box ms-4 mt-4">
-                <div class="login-header">
-                    <h1>LOGIN</h1>
-                </div>
-                <p class="text-danger" id="message"></p>
-                <fieldset>
-                    <div class="field">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" value=""/>
-                    </div>
-                    <div class="field">
-                        <label for="password">password</label>
-                        <input type="password" id="password" value="">
-                    </div>
-                    <div class="login-options">
-                        <div>
-                            <input type="checkbox" name="" id="rememberme">
-                            <label for="rememberme">Remember Me</label>
-                        </div>
-                        <div>
-                            <a href="#" onclick="forgotPassword(); return false;">Forgot Password ?</a>
-                        </div>
-                    </div>
-                   
-                    <div class="buttons">
-                        <button  class="login-btn" onclick="login();">LOGIN</button>
-                        <button class="register-btn" onclick="gotoRegister();">REGISTER</button>
-                    </div>
-                    <div class="admin-login-link">
-                        <a href="adminLogin.html">Admin login</a>
-                    </div>
-                </fieldset>
+            <div>
+                <h2 class="brand-text">THE FURNITURE STORE</h2>
             </div>
         </div>
-        
-        <div class="login-banner col">
-            
+
+        <div class="login-box">
+            <div class="login-header">
+                <h1>Welcome Back</h1>
+                <p class="login-subtitle">Sign in to continue</p>
+            </div>
+            <p class="text-danger" id="message"></p>
+            <fieldset>
+                <div class="field">
+                    <label for="email" class="visually-hidden">Email</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                            <path d="M3 7l9 6 9-6"></path>
+                        </svg>
+                        <input type="email" id="email" placeholder="Email Address" value=""/>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="password" class="visually-hidden">Password</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+                            <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                        </svg>
+                        <input type="password" id="password" placeholder="Password" value="">
+                    </div>
+                </div>
+
+                <div class="login-options">
+                    <div class="remember-me-field">
+                        <input type="checkbox" name="" id="rememberme">
+                        <label for="rememberme">Remember me</label>
+                    </div>
+                    <div>
+                        <a href="#" onclick="forgotPassword(); return false;">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button class="login-btn" onclick="login();">Login</button>
+                </div>
+
+                <p class="register-prompt">
+                    Don't have an account?
+                    <button type="button" class="register-btn" onclick="gotoRegister();">Sign Up</button>
+                </p>
+
+                <div class="admin-login-link">
+                    <a href="adminLogin.html">Admin login</a>
+                </div>
+            </fieldset>
         </div>
     </div>
 
-    <!--    Main JS-->
-    <script src="assets/js/login.js?v=2"></script>
-    <script src="assets/js/main.js"></script>
+    <div class="login-banner col"></div>
+</div>
 
-    <script src="assets/js/notification.js"></script>
-    <script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+<!--    Main JS-->
+<script src="assets/js/login.js?v=2"></script>
+<script src="assets/js/main.js"></script>
 
-    <!-- Modernizer JS -->
-    <script src="assets/js/vendor/modernizr.min.js"></script>
-    <!-- jQuery JS -->
-    <script src="assets/js/vendor/jquery.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="assets/js/vendor/popper.min.js"></script>
-    <script src="assets/js/vendor/slick.min.js"></script>
-    <script src="assets/js/vendor/js.cookie.js"></script>
-    <script src="assets/js/vendor/jquery-ui.min.js"></script>
-    <script src="assets/js/vendor/jquery.ui.touch-punch.min.js"></script>
-    <script src="assets/js/vendor/jquery.countdown.min.js"></script>
-    <script src="assets/js/vendor/sal.js"></script>
-    <script src="assets/js/vendor/jquery.magnific-popup.min.js"></script>
-    <script src="assets/js/vendor/imagesloaded.pkgd.min.js"></script>
-    <script src="assets/js/vendor/isotope.pkgd.min.js"></script>
-    <script src="assets/js/vendor/counterup.js"></script>
-    <script src="assets/js/vendor/waypoints.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/notification.js"></script>
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+
+<!-- Modernizer JS -->
+<script src="assets/js/vendor/modernizr.min.js"></script>
+<!-- jQuery JS -->
+<script src="assets/js/vendor/jquery.js"></script>
+<!-- Bootstrap JS -->
+<script src="assets/js/vendor/popper.min.js"></script>
+<script src="assets/js/vendor/slick.min.js"></script>
+<script src="assets/js/vendor/js.cookie.js"></script>
+<script src="assets/js/vendor/jquery-ui.min.js"></script>
+<script src="assets/js/vendor/jquery.ui.touch-punch.min.js"></script>
+<script src="assets/js/vendor/jquery.countdown.min.js"></script>
+<script src="assets/js/vendor/sal.js"></script>
+<script src="assets/js/vendor/jquery.magnific-popup.min.js"></script>
+<script src="assets/js/vendor/imagesloaded.pkgd.min.js"></script>
+<script src="assets/js/vendor/isotope.pkgd.min.js"></script>
+<script src="assets/js/vendor/counterup.js"></script>
+<script src="assets/js/vendor/waypoints.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
