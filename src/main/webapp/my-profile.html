@@ -18,14 +18,10 @@
 </header>
 
 <main class="profile-page">
-    <section class="container profile-header-card">
-        <div class="profile-avatar">
-            <span id="profileInitials">--</span>
-        </div>
-        <div class="profile-identity">
+    <section class="container profile-page-heading">
+        <div>
             <p class="label">MY ACCOUNT</p>
-            <h1 id="profileName">My Profile</h1>
-            <p id="profileEmailText">Loading profile details...</p>
+            <h1>My Account</h1>
         </div>
         <a href="cart.html" class="profile-cart-link">View Cart</a>
     </section>
@@ -40,56 +36,72 @@
 
         <section class="profile-panel" id="profile-details-panel">
             <div class="profile-panel-heading">
-                <div>
-                    <p class="label">PERSONAL INFO</p>
-                    <h2>Profile Details</h2>
+                <div class="profile-identity-block">
+                    <div class="profile-avatar">
+                        <span id="profileInitials">--</span>
+                    </div>
+                    <div class="profile-identity">
+                        <h2 id="profileName">My Profile</h2>
+                        <p id="profileEmailText">Loading profile details...</p>
+                    </div>
                 </div>
-                <button type="button" class="profile-save-btn" onclick="updateProfileDetails();">Update Details</button>
+
+                <button type="button" class="profile-edit-btn" id="profile-edit-btn" onclick="toggleProfileEdit(true);">Edit</button>
+                <div class="profile-edit-actions" id="profile-edit-actions">
+                    <button type="button" class="profile-discard-btn" onclick="discardProfileEdit();">Discard</button>
+                    <button type="button" class="profile-save-btn" onclick="updateProfileDetails();">Update Changes</button>
+                </div>
             </div>
 
             <form class="profile-form">
                 <div class="profile-form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" placeholder="Shehani">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" placeholder="Shehani" readonly>
                 </div>
                 <div class="profile-form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" placeholder="Kavindi">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" placeholder="Kavindi" readonly>
                 </div>
                 <div class="profile-form-group wide">
-                    <label for="profileEmail">Email Address</label>
-                    <input type="email" id="profileEmail" placeholder="shehanikavindi2005@gmail.com">
+                    <label for="profileEmail">Email *</label>
+                    <div class="input-with-icon">
+                        <svg class="field-icon field-icon--lock" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+                            <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                        </svg>
+                        <input type="email" id="profileEmail" placeholder="shehanikavindi2005@gmail.com" readonly>
+                    </div>
                 </div>
                 <div class="profile-form-group wide">
-                    <label for="addressLineOne">Address Line 01</label>
-                    <input type="text" id="addressLineOne" placeholder="House number and street">
+                    <label for="addressLineOne">Address Line 01 *</label>
+                    <input type="text" id="addressLineOne" placeholder="House number and street" readonly>
                 </div>
                 <div class="profile-form-group wide">
                     <label for="addressLineTwo">Address Line 02</label>
-                    <input type="text" id="addressLineTwo" placeholder="Apartment, suite, or landmark">
+                    <input type="text" id="addressLineTwo" placeholder="Apartment, suite, or landmark" readonly>
                 </div>
                 <div class="profile-form-group">
-                    <label for="mobile">Mobile</label>
-                    <input type="text" id="mobile" placeholder="0771234567">
+                    <label for="mobile">Mobile *</label>
+                    <input type="text" id="mobile" placeholder="0771234567" readonly>
                 </div>
                 <div class="profile-form-group">
                     <label for="postalCode">Postal Code</label>
-                    <input type="text" id="postalCode" placeholder="10250">
+                    <input type="text" id="postalCode" placeholder="10250" readonly>
                 </div>
                 <div class="profile-form-group">
-                    <label for="province">Province</label>
-                    <select id="province">
+                    <label for="province">Province *</label>
+                    <select id="province" disabled>
                         <option value="">Select Province</option>
                     </select>
                 </div>
                 <div class="profile-form-group">
-                    <label for="district">District</label>
+                    <label for="district">District *</label>
                     <select id="district" disabled>
                         <option value="">Select District</option>
                     </select>
                 </div>
                 <div class="profile-form-group">
-                    <label for="city">City</label>
+                    <label for="city">City *</label>
                     <select id="city" disabled>
                         <option value="">Select City</option>
                     </select>
@@ -148,6 +160,28 @@
 
         loadProfileDetails();
     });
+
+    /* ===== Edit / Discard / Update toggle (UI only, no API changes) ===== */
+    const EDITABLE_TEXT_FIELD_IDS = ['firstName', 'lastName', 'addressLineOne', 'addressLineTwo', 'mobile', 'postalCode'];
+
+    function toggleProfileEdit(isEditing) {
+        EDITABLE_TEXT_FIELD_IDS.forEach(id => {
+            document.getElementById(id).readOnly = !isEditing;
+        });
+
+        document.getElementById('province').disabled = !isEditing;
+        document.getElementById('district').disabled = !isEditing;
+        document.getElementById('city').disabled = !isEditing;
+
+        document.getElementById('profile-details-panel').classList.toggle('is-editing', isEditing);
+        document.getElementById('profile-edit-btn').style.display = isEditing ? 'none' : '';
+        document.getElementById('profile-edit-actions').style.display = isEditing ? 'flex' : 'none';
+    }
+
+    function discardProfileEdit() {
+        toggleProfileEdit(false);
+        loadProfileDetails();
+    }
 
     function openLogoutModal() {
         document.getElementById('logout-modal-overlay').style.display = 'grid';
@@ -236,16 +270,16 @@
         card.className = 'profile-order-card';
         card.innerHTML =
             '<div class="profile-order-top">' +
-                '<div>' +
-                    '<h3>Order #' + order.orderId + '</h3>' +
-                    '<p>' + escapeHtml(order.orderDate || '') + ' · ' + escapeHtml(order.deliveryType || '-') + '</p>' +
-                '</div>' +
-                '<span class="profile-order-status">' + escapeHtml(order.status || '-') + '</span>' +
+            '<div>' +
+            '<h3>Order #' + order.orderId + '</h3>' +
+            '<p>' + escapeHtml(order.orderDate || '') + ' · ' + escapeHtml(order.deliveryType || '-') + '</p>' +
+            '</div>' +
+            '<span class="profile-order-status">' + escapeHtml(order.status || '-') + '</span>' +
             '</div>' +
             '<div class="profile-order-summary">' +
-                '<span>Items: ' + Number(order.itemCount || 0) + '</span>' +
-                '<span>Delivery: $' + formatMoney(order.deliveryFee || 0) + '</span>' +
-                '<strong>Total: $' + formatMoney(order.total || 0) + '</strong>' +
+            '<span>Items: ' + Number(order.itemCount || 0) + '</span>' +
+            '<span>Delivery: $' + formatMoney(order.deliveryFee || 0) + '</span>' +
+            '<strong>Total: $' + formatMoney(order.total || 0) + '</strong>' +
             '</div>' +
             '<div class="profile-order-items">' + createProfileOrderItems(order.items || []) + '</div>' +
             createProfileOrderActions(order);
@@ -373,7 +407,8 @@
             showProfileMessage(data.message, data.status);
 
             if (data.status) {
-                loadProfileDetails();
+                await loadProfileDetails();
+                toggleProfileEdit(false);
             }
         } catch (e) {
             showProfileMessage('Failed to update profile details.', false);
@@ -414,7 +449,7 @@
             }
 
             fillSelect('district', data.data, 'Select District', selectedDistrictId);
-            document.getElementById('district').disabled = false;
+            document.getElementById('district').disabled = !document.getElementById('profile-details-panel').classList.contains('is-editing');
         } catch (e) {
             showProfileMessage('Failed to load districts.', false);
         }
@@ -437,7 +472,7 @@
             }
 
             fillSelect('city', data.data, 'Select City', selectedCityId);
-            document.getElementById('city').disabled = false;
+            document.getElementById('city').disabled = !document.getElementById('profile-details-panel').classList.contains('is-editing');
         } catch (e) {
             showProfileMessage('Failed to load cities.', false);
         }
