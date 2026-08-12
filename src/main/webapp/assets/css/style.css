@@ -2430,6 +2430,14 @@ body {
     margin-top: 0;
 }
 
+.profile-panel-heading > a.profile-save-btn {
+    width: auto;
+    height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 1.4rem;
+}
+
 .profile-save-btn {
     margin-top: 0;
     border-radius: 999px;
@@ -2464,6 +2472,7 @@ body {
 
 .profile-form-group input,
 .profile-form-group select {
+    width: 100%;
     min-height: 3rem;
     border: 1.5px solid rgba(45,40,27,0.12);
     border-radius: 10px;
@@ -2472,6 +2481,10 @@ body {
     background-color: #fff;
     font-family: 'sub';
     transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.profile-form-group .input-with-icon {
+    width: 100%;
 }
 
 .profile-form-group input[readonly],
