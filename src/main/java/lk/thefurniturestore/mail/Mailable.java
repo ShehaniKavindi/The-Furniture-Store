@@ -22,6 +22,7 @@ public abstract class Mailable implements Runnable{
     @Override
     public void run() {
         try {
+            System.out.println("Sending email through the configured SMTP server...");
             Session mailSession = Session.getInstance(mailServiceProvider.getProperties(), mailServiceProvider.getAuthenticator());
             MimeMessage mimeMessage = new MimeMessage(mailSession);
             mimeMessage.setFrom(new InternetAddress(Env.get("app.mail")));
@@ -34,7 +35,8 @@ public abstract class Mailable implements Runnable{
             }
             System.out.println("Recipients: " + mimeMessage.getRecipients(Message.RecipientType.TO));
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            System.err.println("Email delivery failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

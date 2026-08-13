@@ -118,4 +118,41 @@ public class ProductInsightsService {
         }
         return csv.toString();
     }
+
+    public String getLowStockCsv(int threshold) {
+        StringBuilder csv = new StringBuilder("Product,Category,Stock,Unit Price\n");
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            List<Product> products = session.createQuery(
+                            "FROM Product p LEFT JOIN FETCH p.category WHERE p.quantity <= :threshold ORDER BY p.quantity, p.title",
+                            Product.class)
+                    .setParameter("threshold", Math.max(0, threshold))
+                    .list();
+            for (Product product : products) {
+                csv.append(csvValue(product.getTitle())).append(',')
+                        .append(csvValue(product.getCategory() == null ? "" : product.getCategory().getName())).append(',')
+                        .append(product.getQuantity()).append(',').append(product.getPrice()).append('\n');
+            }
+        }
+        return csv.toString();
+    }
+
+    public String getAboveCategoryAverageCsv() {
+        StringBuilder csv = new StringBuilder("Product,Category,Unit Price\n");
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            List<Product> products = session.createQuery(
+                    "FROM Product p JOIN FETCH p.category c WHERE p.price > "
+                            + "(SELECT AVG(p2.price) FROM Product p2 WHERE p2.category.id = c.id) "
+                            + "ORDER BY c.name, p.price DESC", Product.class).list();
+            for (Product product : products) {
+                csv.append(csvValue(product.getTitle())).append(',')
+                        .append(csvValue(product.getCategory().getName())).append(',')
+                        .append(product.getPrice()).append('\n');
+            }
+        }
+        return csv.toString();
+    }
+
+    private String csvValue(String value) {
+        return '"' + value.replace("\"", "\"\"") + '"';
+    }
 }

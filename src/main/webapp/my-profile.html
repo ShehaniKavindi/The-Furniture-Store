@@ -290,10 +290,12 @@
         const status = String(order.status || '').toUpperCase();
         let actions = '';
 
-        if (status === 'DELIVERED') {
+        if (status === 'SHIPPED' || status === 'DELIVERED') {
             actions =
                 '<button type="button" class="profile-save-btn" onclick="updateMyOrderStatus(' + order.orderId + ', \'RECEIVED\')">Confirm Received</button>' +
-                '<button type="button" class="profile-save-btn" onclick="updateMyOrderStatus(' + order.orderId + ', \'RETURNED\')">Return</button>';
+                (status === 'DELIVERED'
+                    ? '<button type="button" class="profile-save-btn" onclick="updateMyOrderStatus(' + order.orderId + ', \'RETURNED\')">Return</button>'
+                    : '');
         } else if (status !== 'CANCELLED' && status !== 'RECEIVED' && status !== 'RETURNED') {
             actions = '<button type="button" class="profile-save-btn" onclick="updateMyOrderStatus(' + order.orderId + ', \'CANCELLED\')">Cancel Order</button>';
         }

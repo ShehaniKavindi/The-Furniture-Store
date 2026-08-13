@@ -6,15 +6,13 @@ import lk.thefurniturestore.mail.Mailable;
 import lk.thefurniturestore.util.Env;
 
 import java.util.Properties;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class MailServiceProvider {
     private ThreadPoolExecutor executor;
     private Authenticator authenticator;
-    private final BlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<>();
     private final Properties properties = new Properties();
     private static MailServiceProvider mailServiceProvider;
     private final boolean enabled;
@@ -33,6 +31,9 @@ public class MailServiceProvider {
         properties.put("mail.smtp.starttls.required", true);
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", port);
+        properties.put("mail.smtp.connectiontimeout", "10000");
+        properties.put("mail.smtp.timeout", "10000");
+        properties.put("mail.smtp.writetimeout", "10000");
 
     }
 
@@ -56,8 +57,7 @@ public class MailServiceProvider {
             }
         };
         executor = new ThreadPoolExecutor(2, 5, 5,
-                TimeUnit.SECONDS, blockingQueue, new ThreadPoolExecutor.AbortPolicy());
-        executor.prestartCoreThread();
+                TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new ThreadPoolExecutor.AbortPolicy());
         System.out.println("\u001B[32mEmailServiceProvider Initialized...\u001B[32m");
     }
 
@@ -79,6 +79,6 @@ public class MailServiceProvider {
         if (executor == null) {
             throw new IllegalStateException("Email service is not configured.");
         }
-        blockingQueue.offer(mailable);
+        executor.execute(mailable);
     }
 }

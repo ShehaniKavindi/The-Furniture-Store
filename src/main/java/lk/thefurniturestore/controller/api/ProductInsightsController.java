@@ -36,4 +36,20 @@ public class ProductInsightsController {
         return Response.ok(insightsService.getCategorySalesCsv())
                 .header("Content-Disposition", "attachment; filename=category-sales-report.csv").build();
     }
+
+    @GET
+    @Path("/low-stock.csv")
+    @Produces("text/csv")
+    public Response exportLowStock(@QueryParam("threshold") int threshold) {
+        return Response.ok(insightsService.getLowStockCsv(threshold <= 0 ? 3 : threshold))
+                .header("Content-Disposition", "attachment; filename=low-stock-report.csv").build();
+    }
+
+    @GET
+    @Path("/above-category-average.csv")
+    @Produces("text/csv")
+    public Response exportAboveCategoryAverage() {
+        return Response.ok(insightsService.getAboveCategoryAverageCsv())
+                .header("Content-Disposition", "attachment; filename=pricing-insights-report.csv").build();
+    }
 }

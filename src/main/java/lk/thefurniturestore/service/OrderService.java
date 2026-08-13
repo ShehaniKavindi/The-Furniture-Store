@@ -577,6 +577,10 @@ public class OrderService {
             return false;
         }
 
+        if (STATUS_SHIPPED.equals(currentStatusValue)) {
+            return STATUS_RECEIVED.equals(targetStatusValue);
+        }
+
         if (STATUS_DELIVERED.equals(currentStatusValue)) {
             return STATUS_RECEIVED.equals(targetStatusValue) || STATUS_RETURNED.equals(targetStatusValue);
         }

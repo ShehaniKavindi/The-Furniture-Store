@@ -16,6 +16,6 @@ public class AppUtil {
 
     public static String generateCode() {
         int randomNumber = SECURE_RANDOM.nextInt(1_000_000);
-        return String.format("%6d", randomNumber);
+        return String.format("%06d", randomNumber);
     }
 }
