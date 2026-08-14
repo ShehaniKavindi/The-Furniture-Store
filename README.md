@@ -47,6 +47,37 @@ A Java 11 furniture e-commerce application with a Jersey REST API, Hibernate ORM
 | JUnit Jupiter | Automated tests | 5.10.2 |
 | Maven Wrapper | Build and test tooling | Included |
 
+
+## Screenshots
+
+### Customer storefront
+
+| Home | Shop |
+|---|---|
+| ![Furniture Store home page](docs/screenshots/home.png) | ![Furniture Store shop page](docs/screenshots/shop.png) |
+
+| Product details | Shopping cart |
+|---|---|
+| ![Furniture Store product details](docs/screenshots/single%20product%20view.png) | ![Furniture Store shopping cart](docs/screenshots/cart.png) |
+
+| Search | Customer profile |
+|---|---|
+| ![Furniture Store search page](docs/screenshots/search.png) | ![Furniture Store customer profile](docs/screenshots/my%20profile.png) |
+
+### Administration workspace
+
+| Dashboard | Product management |
+|---|---|
+| ![Furniture Store administration dashboard](docs/screenshots/admin%20dashboard.png) | ![Furniture Store administration product management](docs/screenshots/admin%20-%20products.png) |
+
+| Order management | Reports |
+|---|---|
+| ![Furniture Store administration order management](docs/screenshots/admin%20-%20orders.png) | ![Furniture Store administration reports](docs/screenshots/admin%20-%20reports.png) |
+
+### Data model
+
+![Furniture Store entity-relationship diagram](docs/screenshots/er_diagram.png)
+
 ## Prerequisites
 
 - JDK 11 or newer
