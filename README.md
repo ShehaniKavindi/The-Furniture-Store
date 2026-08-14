@@ -75,11 +75,7 @@ A Java 11 furniture e-commerce application with a Jersey REST API, Hibernate ORM
 
 ### Data model
 
-<<<<<<< HEAD
 ![Furniture Store entity-relationship diagram](docs/appendices/er_diagram.png)
-=======
-![Furniture Store entity-relationship diagram](docs/screenshots/er_diagram.png)
->>>>>>> f3c9fb15a10bcf0e51f29a784e0bca02ec987893
 
 ## Prerequisites
 
