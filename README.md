@@ -75,7 +75,7 @@ A Java 11 furniture e-commerce application with a Jersey REST API, Hibernate ORM
 
 ### Data model
 
-![Furniture Store entity-relationship diagram](docs/screenshots/er_diagram.png)
+![Furniture Store entity-relationship diagram](docs/appendices/er_diagram.png)
 
 ## Prerequisites
 
@@ -131,6 +131,8 @@ Use `.env.example` as the complete template. Keep production secrets in your dep
 - [Database schema](database/schema.sql)
 - [Entity-relationship diagram](database/erd.md)
 - [Manual test cases](testing/manual-test-cases.md)
+- [Navigation structure diagram](docs/appendices/Figure%204.2%20Navigation%20Structure.png)
+- [Order and delivery workflow](docs/appendices/Figure%204.3%20Order%20and%20Delivery%20Workflow.png)
 
 ## Build output
 
